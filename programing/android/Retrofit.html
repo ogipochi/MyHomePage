@@ -1,0 +1,122 @@
+<!DOCTYPE>
+<html lang="ja">
+
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width">
+	<script type="text/javascript" src="../../js/syntaxhighlighter/scripts/shCore.js"></script>
+	<script type="text/javascript" src="../../js/syntaxhighlighter/scripts/shBrushJScript.js"></script>
+	<script type="text/javascript" src="../../js/syntaxhighlighter/scripts/shBrushJava.js"></script>
+	<link type="text/css" rel="stylesheet" href="../../js/syntaxhighlighter/styles/shCoreDefault.css">
+	<link type="text/css" rel="stylesheet" href="../../js/syntaxhighlighter/styles/shCore.css">
+	<script type="text/javascript">SyntaxHighlighter.all()</script>
+</head>
+<body>
+	<div class="wrapper">
+		<header>
+		OkHttpを使った通信はなんだかいろいろめんどかったので、Retrofitを使ってみる.
+		RetrofitはAPIで認証と対話を行い、OkHttpでネットワークのリクエストを行います.
+		(<a href="https://guides.codepath.com/android/Using-OkHttp">
+		OkHttpについて</a>)
+		このライブラリはwebの簡単なAPIからJSONとXMLをダウンロードします.
+		データがダウンロードしたのち,response内の各リソースで定義されている,
+		POJO(Plain Old Java Object)にparseします.
+		<p>参考サイト</p>
+		<a href="https://github.com/codepath/android_guides/wiki/Consuming-APIs-with-Retrofit">
+		https://github.com/codepath/android_guides/wiki/Consuming-APIs-with-Retrofit</a>
+		<a href="http://qiita.com/sagaraya/items/115c15c0df3e84ecbc7f">
+		http://qiita.com/sagaraya/items/115c15c0df3e84ecbc7f</a>
+		</header>
+		<main>
+			<h1>SetUp</h1>
+			まずはインターネットのパーミッションと,gradleでのライブラリの追加から.
+			かつてはRetrofitはJsonデータのシリアライズ化とデシリアライズ化をGsonのライブラリに依存していましたが,
+			今のRetrofit2ではresponseデータの処理に様々なパーサを使うことができます(Moshiなど).
+			ただそこにはいくつか制限があるので,とりあえずはGsonを使います.
+			<p>AndroidManifest.xml</p>
+			<pre class="brush:xml">
+			&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;
+&lt;manifest xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;
+    package=&quot;com.example.pochi.retrofitsample&quot;&gt;
+    &lt;uses-permission android:name=&quot;android.permission.INTERNET&quot; /&gt;
+    &lt;application
+        android:allowBackup=&quot;true&quot;
+        android:icon=&quot;@mipmap/ic_launcher&quot;
+        android:label=&quot;@string/app_name&quot;
+        android:roundIcon=&quot;@mipmap/ic_launcher_round&quot;
+        android:supportsRtl=&quot;true&quot;
+        android:theme=&quot;@style/AppTheme&quot;&gt;
+        &lt;activity android:name=&quot;.MainActivity&quot;&gt;
+            &lt;intent-filter&gt;
+                &lt;action android:name=&quot;android.intent.action.MAIN&quot; /&gt;
+
+                &lt;category android:name=&quot;android.intent.category.LAUNCHER&quot; /&gt;
+            &lt;/intent-filter&gt;
+        &lt;/activity&gt;
+    &lt;/application&gt;
+
+&lt;/manifest&gt;
+			</pre>
+			<p>build.gradle</p>
+			<pre class="brush:java">
+				dependencies {
+    compile fileTree(include: ['*.jar'], dir: 'libs')
+    androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
+        exclude group: 'com.android.support', module: 'support-annotations'
+    })
+    compile 'com.android.support:appcompat-v7:25.3.0'
+    compile 'com.android.support.constraint:constraint-layout:1.0.2'
+    testCompile 'junit:junit:4.12'
+    compile 'com.google.code.gson:gson:2.2.4'
+    compile 'com.squareup.okhttp:okhttp:2.0.0'
+    compile 'com.squareup.retrofit2:retrofit:2.2.0'
+    compile 'com.squareup.retrofit2:converter-gson:2.2.0'
+}
+			</pre>
+			<h1>ResorseのJavaのクラスの作成</h1>
+			今回はGsonを使った手動生成の方法とjsonschema2pojoを使ってJSONのoutputをキャプチャする方法の二つの方法を説明します.
+			自動生成のほうがどのようなアプローチを踏むのかは手動生成を勉強すれば理解できます.
+			<h3>Manual approach</h3>
+			詳しくは<a href="https://guides.codepath.com/android/Leveraging-the-Gson-Library">ここ</a>で
+			<h3>Automated approach</h3>
+			
+			まずは<a href="http://www.jsonschema2pojo.org/">ここ</a>に行きます.
+			SorceType:Json,AnnotationStyle:Gsonにします.
+			JSONのアウトプット(今回は
+			<a href="http://express.heartrails.com/api/json?method=getStations&line=JR山手線">これ</a>を使ってみる)をテキストボックスに貼り付けます.
+			あとはデフォルトのままでpreviewボタンをクリック.
+			するとjavaのクラスが生成されます.
+			packageとクラスの名前は適宜変更して貼り付ける.
+			@Generatedをつけるとコードが自動生成されたことを示せます.(複数のアノテーションを使うのはあまり一般的とは言えませんが)
+
+<h1>retrofitインスタンスの生成</h1>
+APIにネットワークリクエストを送るために,RetrofitBuilderクラスを使い、baseURLを指定します.
+Gsonライブラリを使ってresponseをデシリアライズするためにfactoryの追加が必要です.
+<h1>EndPointの定義</h1>
+Retrofit2はパラメータとリクエストメソッドの詳細を暗号化するためのアノテーションを使って,
+インターフェース内でendpointを定義します.
+返し値はCall&lt;T&gt;で定義されます.
+	今回ならCall&lt;User&gt;ですね.
+特に返し値に指定がなければ,単にCall&lt;ResponseBody&gt;でよいです.
+<p>MyApiEndpointInterface.java</p>
+<pre class="brush:java">
+
+</pre>
+各endpointでHTTPメソッド（GETやPOST）とネットワークcallを送るのにつかわれるメソッドのアノテーションが明示します.
+このメソッドのパラメータは特別なアノテーションを持ちます.
+<h1>baseURLの変更</h1>
+通常,baseURLはRetrofitのインスタンス時に定義されるが,Retrofit2ではbaseURLのアノテーションないで変えられます.
+<p>@POST("https://api.github.com/api/v3")</p>
+<h1>JSONデータのPOSTing</h1>
+Retrofit2はJavaオブジェクトからのデータのデシリアライゼーションを扱うのにコンバータライブラリを使います.
+@Bodyパラメータでパラメータを指定しているなら,これは自動で行われます.
+例えばGsonライブラリを使っているなら,クラスに所属するあらゆるフィールドがシリアライズされます.
+
+
+
+
+	</main>
+		<footer>
+
+		</footer>
+	</div>

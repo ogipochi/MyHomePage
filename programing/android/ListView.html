@@ -1,0 +1,299 @@
+<!DOCTYPE>
+<html lang="ja">
+
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width">
+	<script type="text/javascript" src="../../js/syntaxhighlighter/scripts/shCore.js"></script>
+	<script type="text/javascript" src="../../js/syntaxhighlighter/scripts/shBrushJScript.js"></script>
+	<script type="text/javascript" src="../../js/syntaxhighlighter/scripts/shBrushJava.js"></script>
+	<script type="text/javascript" src="../../js/syntaxhighlighter/scripts/shBrushXml.js"></script>
+	<link type="text/css" rel="stylesheet" href="../../js/syntaxhighlighter/styles/shCoreDefault.css">
+	<link type="text/css" rel="stylesheet" href="../../js/syntaxhighlighter/styles/shCore.css">
+	<script type="text/javascript">
+		SyntaxHighlighter.all()
+	</script>
+</head>
+
+<body>
+	<div class="wrapper">
+		<header>
+			参考
+			<a href="http://qiita.com/Tsumugi/items/47f31bb7351979a45653">
+			http://qiita.com/Tsumugi/items/47f31bb7351979a45653
+			</a>
+		</header>
+		<main>
+			<h1>ListViewとは</h1>
+			ListViewとはデータをリスト型で表示するためのクラスです.
+			<h1>例１</h1>
+			まずは非常に簡単な例から. "リンゴ","トマト","バナナ","イチゴ"のリストをリストビューとして画面に表示します.
+			<p>activity_main.xml</p>
+			<pre class="brush:xml">
+				&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;
+&lt;android.support.constraint.ConstraintLayout xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;
+    xmlns:app=&quot;http://schemas.android.com/apk/res-auto&quot;
+    xmlns:tools=&quot;http://schemas.android.com/tools&quot;
+    android:layout_width=&quot;match_parent&quot;
+    android:layout_height=&quot;match_parent&quot;
+    tools:context=&quot;com.example.pochi.listviewsample.MainActivity&quot;&gt;
+
+
+    &lt;ListView
+        android:layout_width=&quot;368dp&quot;
+        android:layout_height=&quot;495dp&quot;
+        android:id=&quot;@+id/listview&quot;
+         /&gt;
+&lt;/android.support.constraint.ConstraintLayout&gt;
+
+			</pre> まずはmainのxml中でListview要素を定義
+			<p>MainActiviy.java</p>
+			<pre class="brush:java">
+						package com.example.pochi.listviewsample;
+
+import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
+
+public class MainActivity extends AppCompatActivity {
+    ListView listView;
+
+    private static final String[] foods={
+        "リンゴ","トマト","バナナ","イチゴ"
+    };
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        listView = (ListView) findViewById(R.id.listview);
+
+        ArrayAdapter<String> arrayAdapter=
+                new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1,foods);
+
+        listView.setAdapter(arrayAdapter);
+    }
+}
+
+</pre>
+<p>
+	private static final String[] foods={
+        "リンゴ","トマト","バナナ","イチゴ"
+    };
+</p>
+でリストビューで表示する文字列をリストで定義します.
+onCreate内では
+<p>listView = (ListView) findViewById(R.id.listview);</p>
+でxmlのlistviewをインスタンス化し、
+arrayadapterでlistviewにリストを入れる準備をし、
+<p>listView.setAdapter(arrayAdapter);</p>
+でlistViewに実際に入れるという流れです.
+<h3>adapter</h3>
+listviewを画面に表示するには、adapterが必要になります.
+adapterには種類があり今使ったarrayadapterは
+<p>public ArrayAdapter(Context context, int resource, T[] objects)</p>
+以降で違うadapterも使っていきます.
+<h1>例２</h1>
+次にリストビューをカスタマイズして表示していきます.
+この例ではサムネ画像と、タイトルを並べたリストビューを作って行きます.
+<p>samplelist_item.xml</p>
+<pre class="brush:xml">
+&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;
+&lt;LinearLayout xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;
+    android:layout_width=&quot;match_parent&quot;
+    android:layout_height=&quot;match_parent&quot;
+    android:orientation=&quot;horizontal&quot;&gt;
+    &lt;ImageView
+        android:id=&quot;@+id/thumbnail&quot;
+        android:layout_width=&quot;wrap_content&quot;
+        android:layout_height=&quot;wrap_content&quot;
+        android:padding=&quot;3dp&quot;
+        /&gt;
+    &lt;TextView
+        android:id=&quot;@+id/title&quot;
+        android:textColor=&quot;#000&quot;
+        android:layout_weight=&quot;4&quot;
+        android:padding=&quot;5dp&quot;
+        android:gravity=&quot;center_vertical&quot;
+        android:text=&quot;Sample Text&quot;
+        android:layout_width=&quot;wrap_content&quot;
+        android:layout_height=&quot;wrap_content&quot; /&gt;
+&lt;/LinearLayout&gt;
+</pre>
+このxmlファイルは一つの要素のレイアウトを決めるものです.
+今回はImageViewの横にtextViewを並べています.
+<p>activity_main.xml</p>
+
+<pre class="brush:xml">
+&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;
+&lt;android.support.constraint.ConstraintLayout xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;
+    xmlns:app=&quot;http://schemas.android.com/apk/res-auto&quot;
+    xmlns:tools=&quot;http://schemas.android.com/tools&quot;
+    android:layout_width=&quot;match_parent&quot;
+    android:layout_height=&quot;match_parent&quot;
+    tools:context=&quot;com.example.pochi.listviewsample2.MainActivity&quot;&gt;
+
+    &lt;ListView
+        android:id=&quot;@+id/sample_listview&quot;
+        android:layout_width=&quot;match_parent&quot;
+        android:layout_height=&quot;wrap_content&quot; /&gt;
+
+&lt;/android.support.constraint.ConstraintLayout&gt;
+
+</pre>
+MainActivityのレイアウトファイルです.
+今回はリストびゅーを表示するだけなので、要素は一つです.
+(外枠のレイアウトがConstraintLayoutになっていますが、これは新しく推奨されているレイアウトのようで自動でこれになっていました.)
+<p>SampleListItem.java</p>
+<pre class="brush:java">
+	package com.example.pochi.listviewsample2;
+
+import android.graphics.Bitmap;
+
+/**
+ * Created by pochi on 2017/03/24.
+ */
+
+public class SampleListItem {
+
+
+    private Bitmap mThumbnail = null;
+    private String mTitle=null;
+//    コンストラクタ
+    public SampleListItem() {
+
+    };
+    public SampleListItem(Bitmap thumbnail,String title){
+        this.mThumbnail = thumbnail;
+        this.mTitle=title;
+    }
+    public void setmThumbnail(Bitmap thumbnail){
+        this.mThumbnail=thumbnail;
+    }
+    public void setmTitle(String title){
+        this.mTitle=title;
+    }
+    public Bitmap getmThumbnail() {
+        return mThumbnail;
+    }
+
+    public String getmTitle() {
+        return mTitle;
+    }
+
+}
+</pre>
+ただのリストの要素を定義しているクラスです.
+ただのコンストラクタとセッター、ゲッターです.
+<p>SampleListAdapter</p>
+<pre class="brush:java">
+package com.example.pochi.listviewsample2;
+
+import android.content.Context;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.ImageView;
+import android.widget.TextView;
+
+import java.util.List;
+
+/**
+ * Created by pochi on 2017/03/24.
+ */
+
+public class SampleListAdapter extends ArrayAdapter&lt;SampleListItem&gt; {
+    private int mResource;
+    private List&lt;SampleListItem&gt; mItems;
+    private LayoutInflater mInflater;
+
+    public SampleListAdapter(Context context, int resource, List&lt;SampleListItem&gt; items) {
+        super(context, resource, items);
+
+        mResource = resource;
+        mItems = items;
+        mInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+
+    }
+    @Override
+    public View getView(int position, View convertView, ViewGroup parent){
+        View view;
+
+        if(convertView!=null){
+            view=convertView;
+        }else{
+            view=mInflater.inflate(mResource,null);
+        }
+        SampleListItem item= mItems.get(position);
+
+        ImageView thumbnail = (ImageView)view.findViewById(R.id.thumbnail);
+        thumbnail.setImageBitmap(item.getmThumbnail());
+
+        TextView title=(TextView)view.findViewById(R.id.title);
+        title.setText(item.getmTitle());
+
+        return view;
+    }
+
+
+}
+
+</pre>
+おそらくこのクラスが今回一番重要なクラスでしょう.
+まずフィールドの簡単な説明をします.
+mResourceというのはMainActivityのListViewに入れるリストアイテムです.
+mItemsはリストビューの要素（今回ならSampleListItem）のリスト型の入れ物です.
+mInflaterは動的にレイアウトを生成するためのフィールドです.
+コンストラクタの説明は省略.
+getViewはスクロールの際にシステムで呼び出されるメソッドです.
+現在位置に適するViewを生成するものです.
+中身はほとんどテンプレのようです.
+itemでpositionごとに適する要素をリストから見つけます.
+その要素に入れるレイアウトの入れ物をsample_list_item.xmlで指定したidから探して、インスタンス化し、
+中身を入れるのです.
+
+<p>MainActivity.java</p>
+<pre class="brush:java">
+package com.example.pochi.listviewsample2;
+
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
+import android.widget.ListView;
+
+import java.util.ArrayList;
+
+public class MainActivity extends AppCompatActivity {
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        ListView listView=(ListView) findViewById(R.id.sample_listview);
+
+        ArrayList&lt;SampleListItem&gt; listItems = new ArrayList&lt;SampleListItem&gt;();
+
+        for(int i=0;i&lt;20;i++){
+            Bitmap bmp= BitmapFactory.decodeResource(getResources(),R.mipmap.ic_launcher);
+            SampleListItem item = new SampleListItem(bmp,&quot;text No.&quot;+String.valueOf(i));
+            listItems.add(item);
+        }
+        SampleListAdapter adapter = new SampleListAdapter(this,R.layout.samplelist_item,listItems);
+        listView.setAdapter(adapter);
+    }
+}
+
+</pre>
+MainActivityはリストを生成するfor文以外は
+</main>
+		<footer>
+
+		</footer>
+	</div>
+</body>
+
+</html>

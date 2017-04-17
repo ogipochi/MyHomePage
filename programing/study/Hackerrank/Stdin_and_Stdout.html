@@ -1,0 +1,51 @@
+<!DOCTYPE>
+<html lang="ja">
+
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width">
+	<script type="text/javascript" src="../../js/syntaxhighlighter/scripts/shCore.js"></script>
+	<script type="text/javascript" src="../../js/syntaxhighlighter/scripts/shBrushJScript.js"></script>
+	<script type="text/javascript" src="../../js/syntaxhighlighter/scripts/shBrushJava.js"></script>
+	<script type="text/javascript" src="../../js/syntaxhighlighter/scripts/shBrushXml.js"></script>
+	<link type="text/css" rel="stylesheet" href="../../js/syntaxhighlighter/styles/shCoreDefault.css">
+	<link type="text/css" rel="stylesheet" href="../../js/syntaxhighlighter/styles/shCore.css">
+	<script type="text/javascript">SyntaxHighlighter.all()</script>
+</head>
+<body>
+	<div class="wrapper">
+		<header>
+			
+		</header>
+		<main>
+			<h1>Java</h1>
+			標準入力を行う方法の一つとして,Scannerクラスを使い入力文字列をSystem.inとして扱います.
+			例えば
+			<pre class="brush:java">
+			Scanner scanner =new Scanner(System.in);
+			String myString =scanner.next();
+			int myInt = scanner.nextInt();
+			scanner.close();
+
+			System.out.println("myString is"+myString);
+			System.out.println("myInt is"+myInt);
+			</pre>
+			scannerをインスタンス化して,次のインデント、または空白までを文字列として返すメソッドnext()と,
+			読み込んだ値をint型で返すメソッドnextInt()で入力を取得し,最後にscannerをcloseします.
+			受け取った値をSystem.out.println()で出力します.<br>
+			(問)３つの入力を受け取り,それを出力してください.
+			入力は３行で与えられ,各行の値は単一の整数です.
+			<pre class="brush:java">
+				public static void main(String[] args){
+					Scanner scan = new Scanner
+					int a = 
+				}
+			</pre>
+
+							</main>
+		<footer>
+
+		</footer>
+	</div>
+</body>
+</html>

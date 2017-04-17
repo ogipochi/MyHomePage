@@ -1,0 +1,57 @@
+<!DOCTYPE>
+<html lang="ja">
+
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width">
+	<script type="text/javascript" src="../../js/syntaxhighlighter/scripts/shCore.js"></script>
+	<script type="text/javascript" src="../../js/syntaxhighlighter/scripts/shBrushJScript.js"></script>
+	<script type="text/javascript" src="../../js/syntaxhighlighter/scripts/shBrushJava.js"></script>
+	<script type="text/javascript" src="../../js/syntaxhighlighter/scripts/shBrushXml.js"></script>
+	<link type="text/css" rel="stylesheet" href="../../js/syntaxhighlighter/styles/shCoreDefault.css">
+	<link type="text/css" rel="stylesheet" href="../../js/syntaxhighlighter/styles/shCore.css">
+	<script type="text/javascript">SyntaxHighlighter.all()</script>
+</head>
+<body>
+	<div class="wrapper">
+		<header>
+			OSやファイルシステムの中にはEOF(End Of File)というテキストファイルの終端を表す特別な記号やデータを表すものがある.
+			これによって,読み込みが終端まで行ったことを理解して打ち切りをを行うことができる.
+		</header>
+		<main>
+			<h1>Java</h1>
+			(問)n行の入力をEOFに達するまで読み込んで,n行のコンテンツを数えて表示する.
+			入力は標準入力で与えられますが,何行あるかは与えられません.
+			空のStringの行はありません.
+			出力は行のナンバー,スペース,入力で受けとった文字列を表示してください.
+			<pre class="brush:java">
+				import java.io.*;
+import java.util.*;
+import java.text.*;
+import java.math.*;
+import java.util.regex.*;
+
+public class Solution {
+
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        int lineNum=0;
+        while(scanner.hasNext()){
+            lineNum++;
+            System.out.println(String.valueOf(lineNum)+" "+scanner.nextLine());
+        }
+        
+    }
+}
+			</pre>
+			
+
+
+
+					</main>
+		<footer>
+
+		</footer>
+	</div>
+</body>
+</html>

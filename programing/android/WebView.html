@@ -1,0 +1,153 @@
+<!DOCTYPE>
+<html lang="ja">
+
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width">
+	<script type="text/javascript" src="../../js/syntaxhighlighter/scripts/shCore.js"></script>
+	<script type="text/javascript" src="../../js/syntaxhighlighter/scripts/shBrushJScript.js"></script>
+	<script type="text/javascript" src="../../js/syntaxhighlighter/scripts/shBrushJava.js"></script>
+	<link type="text/css" rel="stylesheet" href="../../js/syntaxhighlighter/styles/shCoreDefault.css">
+	<link type="text/css" rel="stylesheet" href="../../js/syntaxhighlighter/styles/shCore.css">
+	<script type="text/javascript">SyntaxHighlighter.all()</script>
+</head>
+<body>
+	<div class="wrapper">
+		<header>
+			まずユーザをあるウェブサイトに誘導したいとき、以下の二つの方法があります.
+			<ul>
+				<li>ブラウザアプリにウェブの閲覧を委託</li>
+				<li>アプリないで完結させる</li>
+			</ul>
+			<h1>ブラウザアプリにウェブの閲覧を委託する例1</h1>
+			ボタンを押すとgoogleを開く暗黙的インテントを送るアプリです.
+			<p>activity_main.xml</p>
+			<pre class="brush:xml">
+				&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;
+&lt;LinearLayout xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;
+    xmlns:app=&quot;http://schemas.android.com/apk/res-auto&quot;
+    xmlns:tools=&quot;http://schemas.android.com/tools&quot;
+    android:layout_width=&quot;match_parent&quot;
+    android:layout_height=&quot;match_parent&quot;
+    android:gravity=&quot;center&quot;
+    tools:context=&quot;com.example.pochi.webviewsample.MainActivity&quot;&gt;
+
+    &lt;Button
+        android:id=&quot;@+id/button&quot;
+        android:layout_width=&quot;wrap_content&quot;
+        android:layout_height=&quot;wrap_content&quot;
+        android:text=&quot;Button&quot;
+         /&gt;
+&lt;/LinearLayout&gt;
+			</pre>
+			ボタンを配置しただけです.
+			<p>MainActivity.java</p>
+			<pre class="brush:java">
+			package com.example.pochi.webviewsample;
+
+import android.content.Intent;
+import android.net.Uri;
+import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
+import android.view.View;
+import android.webkit.WebView;
+import android.webkit.WebViewClient;
+import android.widget.Button;
+
+public class MainActivity extends AppCompatActivity {
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+        //ボタンのインスタンスの取得
+        Button button = (Button) findViewById(R.id.button);
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //googleへの暗黙的インテント
+                Uri uri = Uri.parse("http://www.google.com");
+                Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+                startActivity(intent);
+            }
+        });
+    }
+}
+</pre>
+ボタンの取得と,OnClickListenerでの暗黙的インテントの生成です.
+簡単ですね.
+<h1>アプリないで完結させる例1</h1>
+まずはアプリにインターネットへのパーミッションの許可
+<p>AndroidManifest.xml</p>
+<pre class="brush:xml">
+	&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;
+&lt;manifest xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;
+    package=&quot;com.example.pochi.webviewsample&quot;&gt;
+    &lt;uses-permission android:name=&quot;android.permission.INTERNET&quot;/&gt;
+    &lt;application
+        android:allowBackup=&quot;true&quot;
+        android:icon=&quot;@mipmap/ic_launcher&quot;
+        android:label=&quot;@string/app_name&quot;
+        android:roundIcon=&quot;@mipmap/ic_launcher_round&quot;
+        android:supportsRtl=&quot;true&quot;
+        android:theme=&quot;@style/AppTheme&quot;&gt;
+        &lt;activity android:name=&quot;.MainActivity&quot;&gt;
+            &lt;intent-filter&gt;
+                &lt;action android:name=&quot;android.intent.action.MAIN&quot; /&gt;
+
+                &lt;category android:name=&quot;android.intent.category.LAUNCHER&quot; /&gt;
+            &lt;/intent-filter&gt;
+        &lt;/activity&gt;
+    &lt;/application&gt;
+
+&lt;/manifest&gt;
+</pre>
+<p>activity_main.xml</p>
+<pre class="brush:xml">
+	&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;
+&lt;android.support.constraint.ConstraintLayout xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;
+    xmlns:app=&quot;http://schemas.android.com/apk/res-auto&quot;
+    xmlns:tools=&quot;http://schemas.android.com/tools&quot;
+    android:layout_width=&quot;match_parent&quot;
+    android:layout_height=&quot;match_parent&quot;
+    tools:context=&quot;com.example.pochi.webviewsample.MainActivity&quot;&gt;
+
+    &lt;WebView
+        android:layout_width=&quot;match_parent&quot;
+        android:layout_height=&quot;match_parent&quot;
+        android:id=&quot;@+id/webView1&quot;&gt;&lt;/WebView&gt;
+
+&lt;/android.support.constraint.ConstraintLayout&gt;
+
+</pre>
+<p>MainActivity.java</p>
+<pre class="brush:java">
+	package com.example.pochi.webviewsample;
+
+import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
+import android.webkit.WebView;
+import android.webkit.WebViewClient;
+
+public class MainActivity extends AppCompatActivity {
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+        //Idの取得
+        WebView webView=(WebView)findViewById(R.id.webView1);
+        //外部アプリでなくこのアプリで開くために
+        webView.setWebViewClient(new WebViewClient());
+        //googleのページを表示
+        webView.loadUrl("http://www.google.co.jp");
+    }
+}
+</pre>
+		</header>
+		<main>
+		</main>
+		<footer>
+
+		</footer>
+	</div>

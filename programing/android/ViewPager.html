@@ -1,0 +1,187 @@
+<!DOCTYPE>
+<html lang="ja">
+
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width">
+	<script type="text/javascript" src="../../js/syntaxhighlighter/scripts/shCore.js"></script>
+	<script type="text/javascript" src="../../js/syntaxhighlighter/scripts/shBrushJScript.js"></script>
+	<script type="text/javascript" src="../../js/syntaxhighlighter/scripts/shBrushJava.js"></script>
+	<script type="text/javascript" src="../../js/syntaxhighlighter/scripts/shBrushXml.js"></script>
+	<link type="text/css" rel="stylesheet" href="../../js/syntaxhighlighter/styles/shCoreDefault.css">
+	<link type="text/css" rel="stylesheet" href="../../js/syntaxhighlighter/styles/shCore.css">
+	<script type="text/javascript">
+		SyntaxHighlighter.all()
+	</script>
+</head>
+
+<body>
+	<div class="wrapper">
+		<header>
+			ViewPagerはスワイプでViewを移動できる便利なコンポーネントです. 漫画アプリなどでページをめくるような感覚でActivityを入れ替えるのをイメージすると良いでしょう. TabLayoutやNavigationBarの利用にも便利のようです.
+			参考サイト
+			<a href="http://qiita.com/Yuki_Yamada/items/6d8b38effeb38ed96d78">
+			http://qiita.com/Yuki_Yamada/items/6d8b38effeb38ed96d78</a>
+			<a href="http://androhi.hatenablog.com/entry/2015/06/17/083000">
+			http://androhi.hatenablog.com/entry/2015/06/17/083000</a>
+
+
+		</header>
+		<main>
+			<h1>PagerAdapter</h1>
+			ViewPagerはキーでPagerAdapterで中身のViewの管理をします.
+			 このキーはアダプターにおけるそれぞれのページのpositionを識別するのに使われます. 
+			 PagerAdaperは最低限以下のメソッドのオーバーライドが必要になります.
+			<table border=1>
+				<tr>
+					<th></th>
+					<th>処理内容</th>
+					<th>呼ばれるタイミング</th>
+				</tr>
+				<tr>
+					<td>instantiateItem(ViewGroup container,int position)</td>
+					<td>与えられたpositionのページを作成する</td>
+					<td>アイテム追加後に呼ばれる</td>
+				</tr>
+				<tr>
+					<td>destroyItem(ViewGroup,int,Object)</td>
+					<td>与えられたpositionのページを削除する</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>getCount()</td>
+					<td>利用可能なViewnの総数を返す</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>isViewFromObject(View,Object)</td>
+					<td>instantiateItemで返されたキーオブジェクトと関連したViewを決める</td>
+					<td></td>
+				</tr>
+			</table>
+				<h1>ViewPagerの使い方</h1>
+				<ol>
+					<li>レイアウトファイルにViewPager要素をセット</li>
+					<li>ViewPagerにセットするFragmentの用意</li>
+					<li>PagerAdapterの用意</li>
+					<li>ViewPagerにAdapterをセット</li>
+				</ol>
+				<h1>FragmentをViewPagerで利用する場合</h1>
+				ViewPagerでFragmentを利用すると、ユーザがページに戻れる状態である限りfragment managerがFragmentを保持しておいてくれます.
+				tabなどを使用するときはFragmentで使うのが良いでしょう.
+				ユーザーが訪れるページはメモリに保持されますが、その階層が見えなくなると破棄されます.
+				<h2>FragmentPagerAdapterの使い方</h2>
+				FragmentPagerAdapterをPagerAdapterとして使うさいには、IDというのをセットしないといけません.
+				FragmentpagerAdapterを継承したクラスはgetItem(int),getCount()のみのインプリメントで大丈夫です.
+				<table border="1">
+					<tr><td>getItem(int position)</td><td>positionに関連づけられたFragmentを返す</td></tr>
+					<tr><td>getCount()</td><td>利用可能なViewの数を返す</td></tr>
+				</table>
+
+				<h1>例1</h1>
+				<h2>プロジェクト内容</h2>
+				TabごとにFragmentを入れ替える簡単なプロジェクトです.<br>
+				では始めましょう<br>
+				<br>
+				
+				TabLayoutはサポートデザインライブラリが必要になるためこれをプロジェクトに追加します.
+				File>Project Structure>app>Deepndencies<br>
+				の右側の緑のプラスを押してcom.android.support.designを探してそれを追加しましょう.
+				appのbuild.gradleを確認すると
+				<p>compile 'com.android.support:design:25.3.0'</p>
+				のような行が追加されるはずです.
+				<p>activity_main.xml</p>
+				<pre class="brush:xml">
+				&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;
+&lt;android.support.constraint.ConstraintLayout xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;
+    xmlns:app=&quot;http://schemas.android.com/apk/res-auto&quot;
+    xmlns:tools=&quot;http://schemas.android.com/tools&quot;
+    android:layout_width=&quot;match_parent&quot;
+    android:layout_height=&quot;match_parent&quot;
+    tools:context=&quot;com.example.pochi.viewpagersample.MainActivity&quot;&gt;
+
+    &lt;android.support.design.widget.TabLayout
+        android:id=&quot;@+id/tabs&quot;
+        android:layout_width=&quot;match_parent&quot;
+        android:layout_height=&quot;wrap_content&quot;&gt;
+    &lt;/android.support.design.widget.TabLayout&gt;
+    &lt;android.support.v4.view.ViewPager
+        android:id=&quot;@+id/pager&quot;
+        android:layout_width=&quot;match_parent&quot;
+        android:layout_height=&quot;wrap_content&quot;
+        android:layout_below=&quot;@id/tabs&quot;&gt;
+    &lt;/android.support.v4.view.ViewPager&gt;
+
+&lt;/android.support.constraint.ConstraintLayout&gt;
+				</pre>
+				まずはレイアウトファイルにtablayoutとviewPagerを追加します.
+				<p>MainActivity.java</p>
+				<pre class="brush:java">
+					package com.example.pochi.viewpagersample;
+
+import android.app.FragmentManager;
+import android.media.audiofx.BassBoost;
+import android.support.design.widget.TabLayout;
+import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.view.PagerAdapter;
+import android.support.v4.view.ViewPager;
+import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
+import android.util.Log;
+
+public class MainActivity extends AppCompatActivity implements ViewPager.OnPageChangeListener {
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
+        ViewPager viewPager = (ViewPager) findViewById(R.id.pager);
+        ExampleViewPager exampleViewPager = new ExampleViewPager(viewPager);
+        PagerAdapter adapter= new ExampleFragmentPagerAdapter(getSupportFragmentManager());
+        //オートマチック方式: これだけで両方syncする
+        tabLayout.setupWithViewPager(exampleViewPager.AdaptAdapter(adapter));
+        //マニュアル方式: これでViewPagerのPositionとTabのPositionをsyncさせるらしい
+        //tabLayout.setTabsFromPagerAdapter(adapter);
+        //viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
+        //tabLayout.setOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(viewPager));
+
+    }
+
+    @Override
+    public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+    }
+
+    @Override
+    public void onPageSelected(int position) {
+        Log.d("MainActivity", "onPageSelected() position="+position);
+
+    }
+
+    @Override
+    public void onPageScrollStateChanged(int state) {
+
+    }
+}
+
+				</pre>
+				まずはtabLayoutとViewpagerのキャストとExampleFragmentPagerAdapterのインスタンス化を行います.
+				次にviewPagerへadapterをセットします.
+				addOnPageChangeListenerでいつでもページの移行やスクロールを検知できます.
+				ただ公式ページを見ると
+				<p>addOnPageChangeListener (<a href="https://developer.android.com/reference/android/support/v4/view/ViewPager.OnPageChangeListener.html">
+				ViewPager.OnPageChangeListener</a> listener)</p>
+				になっているが、なぜ中の引数がthisなのか、謎.
+
+
+				<p>
+					
+		</main>
+		<footer>
+
+		</footer>
+	</div>
+</body>
+</html>

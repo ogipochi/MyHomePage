@@ -1,0 +1,243 @@
+<!DOCTYPE>
+<html lang="ja">
+
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width">
+	<script type="text/javascript" src="../../js/syntaxhighlighter/scripts/shCore.js"></script>
+	<script type="text/javascript" src="../../js/syntaxhighlighter/scripts/shBrushJScript.js"></script>
+	<script type="text/javascript" src="../../js/syntaxhighlighter/scripts/shBrushJava.js"></script>
+	<link type="text/css" rel="stylesheet" href="../../js/syntaxhighlighter/styles/shCoreDefault.css">
+	<link type="text/css" rel="stylesheet" href="../../js/syntaxhighlighter/styles/shCore.css">
+	<script type="text/javascript">
+		SyntaxHighlighter.all()
+	</script>
+</head>
+
+<body>
+	<div class="wrapper">
+		<header>
+			OkHttpを使った通信
+			<h>OkHttpとは</h>
+			Http通信とSPDY通信をするためのライブラリです.
+			<a href="http://square.github.io/okhttp/">http://square.github.io/okhttp/</a> 参考サイト
+			<a href="http://square.github.io/okhttp/">
+		http://square.github.io/okhttp/</a>
+			<a href="http://qiita.com/LyricalMaestro0/items/698c77f5a964b5658bbb">
+		http://qiita.com/LyricalMaestro0/items/698c77f5a964b5658bbb</a>
+			<a href="http://square.github.io/okhttp/3.x/okhttp/okhttp3/package-summary.html">
+		http://square.github.io/okhttp/3.x/okhttp/okhttp3/package-summary.html</a>
+		</header>
+		<main>
+			<h1>GETとPOST</h1>
+			GETリクエストがデータ頂戴.POSTリクエストがデータ送るよって感じです. GETもPOSTもデータを送ることができます. GETはURLの末尾に送るデータをつけて送ります.
+			<p>URL?"パラメータ名"="値"</p>
+			そのため送るデータ量に限りがあります.
+			<h1>例1.htmlの取得</h1>
+			まずはマニフェストファイルに通信の許可をするpermissionを追加しましょう.
+			<p>AndroidManifest.xml</p>
+			<pre class="brush:xml">
+				&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;
+&lt;manifest xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;
+    package=&quot;com.example.pochi.okhttpsample&quot;&gt;
+    &lt;uses-permission android:name=&quot;android.permission.INTERNET&quot;&gt;&lt;/uses-permission&gt;
+    &lt;application
+        android:allowBackup=&quot;true&quot;
+        android:icon=&quot;@mipmap/ic_launcher&quot;
+        android:label=&quot;@string/app_name&quot;
+        android:roundIcon=&quot;@mipmap/ic_launcher_round&quot;
+        android:supportsRtl=&quot;true&quot;
+        android:theme=&quot;@style/AppTheme&quot;&gt;
+
+        &lt;activity android:name=&quot;.MainActivity&quot;&gt;
+            &lt;intent-filter&gt;
+                &lt;action android:name=&quot;android.intent.action.MAIN&quot; /&gt;
+
+                &lt;category android:name=&quot;android.intent.category.LAUNCHER&quot; /&gt;
+            &lt;/intent-filter&gt;
+        &lt;/activity&gt;
+    &lt;/application&gt;
+
+&lt;/manifest&gt;
+			</pre> 次にMainActivityのレイアウトファイルです. 一つ目のbuttonでhtmlを取得し,二つ目のファイルでTextViewにセットする.
+			<p>activity_main.xml</p>
+			<pre class="brush:xml">
+				&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;
+&lt;LinearLayout xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;
+    xmlns:app=&quot;http://schemas.android.com/apk/res-auto&quot;
+    xmlns:tools=&quot;http://schemas.android.com/tools&quot;
+    android:layout_width=&quot;match_parent&quot;
+    android:layout_height=&quot;match_parent&quot;
+    android:orientation=&quot;vertical&quot;
+    tools:context=&quot;com.example.pochi.okhttpsample.MainActivity&quot;&gt;
+
+
+
+    &lt;Button
+        android:id=&quot;@+id/button2&quot;
+        android:layout_width=&quot;match_parent&quot;
+        android:layout_height=&quot;wrap_content&quot;
+        android:layout_weight=&quot;1&quot;
+        android:text=&quot;Button&quot; /&gt;
+    &lt;Button
+        android:id=&quot;@+id/button3&quot;
+        android:layout_width=&quot;match_parent&quot;
+        android:layout_height=&quot;wrap_content&quot;
+        android:layout_weight=&quot;1&quot;
+        android:text=&quot;Button&quot; /&gt;
+    &lt;TextView
+        android:id=&quot;@+id/textView&quot;
+        android:layout_width=&quot;match_parent&quot;
+        android:layout_height=&quot;wrap_content&quot;
+        android:layout_weight=&quot;1&quot;
+        android:text=&quot;TextView&quot; /&gt;
+&lt;/LinearLayout&gt;
+			</pre> 次にバックグラウンドで非同期の通信を行うClassを作ります.
+			<pre class="brush:java">
+				package com.example.pochi.okhttpsample;
+
+import android.os.AsyncTask;
+
+import java.io.IOException;
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
+
+/**
+ * Created by pochi on 2017/04/03.
+ */
+
+public class HttpRequestTest extends AsyncTask&lt;Void,Void,Void&gt;{
+    public String getReturnhtml() {
+        return returnhtml;
+    }
+
+    String returnhtml;
+    @Override
+    protected Void doInBackground(Void... params) {
+        OkHttpClient clientnet = new OkHttpClient();
+        final Request request = new Request.Builder().url(&quot;http://ogipochi.trial.jp/ex5/index.html&quot;).build();
+        Call call =clientnet.newCall(request);
+        returnhtml = new String();
+        call.enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+
+            returnhtml = response.body().string();
+            }
+
+        });
+        return null ;
+
+    }
+
+}
+			</pre>
+			<h3>OkHttpClient</h3>
+			Httpのクライアントの仕事はあなたのリクエストを受け取り、そのレスポンスを生成する役割があります. Httpのリクエストと一緒にOkHttpを生成すると,「headerと一緒にこのURLをとってきて」 という高水準なリクエストを与えることになります.
+			まずはクライアント(OkHttpClient)をインスタンス化します. 次に,Requestのインスタンス化を行います. これはHttpのリクエストです. bodyがnullなページかimuutable(状態が変化しない)である場合、このクラスのインスタンスもimmutableになります.
+			URLや、メソッド（GET、POSTのようなもの）やheadersのリストをを含むリクエストです. Requestはコンテンツタイプのデータストリームであるbodyも含みます.
+			<h3>Requestについて</h3>
+
+			<h3>Callについて</h3>
+			<a href="http://square.github.io/okhttp/3.x/okhttp/okhttp3/Call.html">Call</a> は実行のために用意されるrequestのinterfaceです. このobjectは単一のrequest/responseのストリームを代理で行います.
+			二度行うことはできません. 実行の方法はenqueue(Callback)でrequestの実行をスケジュールする方法と、execute()で即座に実行する方法があります.
+			<p>excecute</p>
+			execute()で即座に実行する場合、responseを受け取るか,errorになるまでblock(他の作業ができなくなるということかな?)します.
+			resorseのleakを防ぐためにResponseBodyが返ってくるたびに以下のようにResponseを閉じます.
+			<pre call="brush:java">
+					@{code
+
+   // ensure the response (and underlying response body) is closed
+   try (Response response = client.newCall(request).execute()) {
+     ...
+   } }
+			</pre>
+			Response.bodyメソッドによって帰ってくるResponseBodyが解ります.
+			responsebodyはしっかりcloseしないとメモリリークが発生します.
+			通信が失敗したときにはIOExceptionが返されます.
+			<p>enuqueue</p>
+			実行するタイミングをスケジューリングできます.
+			requestが走るとき(他のrequestが動作していなければ即座に)dispatcherが定義します.
+			このclientはHTTPresponseかfailure exceptionとともにresponseCallbackを返します.
+			実行済みの時にはIllegalexceptionを返します.
+			今回の例では、enuqueueにCallbackのインスタンスを渡しています.
+			成功したときにはこのCallbackのonResponseが呼ばれ、失敗したときにはonFailureが呼ばれます.
+			<p>MainActivity.java</p>
+			<pre class="brush:java">
+				package com.example.pochi.okhttpsample;
+
+import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
+import android.widget.TextView;
+
+import org.w3c.dom.Text;
+
+public class MainActivity extends AppCompatActivity {
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        final HttpRequestTest httpRequestTest = new HttpRequestTest();
+        final TextView textView=(TextView) findViewById(R.id.textView);
+        Button button = (Button)findViewById(R.id.button2);
+        Button button3 = (Button) findViewById(R.id.button3);
+
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                httpRequestTest.execute();
+            }
+        });
+        button3.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                textView.setText(httpRequestTest.getReturnhtml());
+            }
+        });
+    }
+}	</pre>
+<br>
+Recipe集<br>
+いくつかsampleが<a href="https://github.com/square/okhttp/wiki/Recipes">公式サイト</a>のっていたので、
+それを参考に勉強してみましょう.
+<h1>Synchronous Get</h1>
+ファイルをダウンロードして,headerを表示,response bodyを文字列として表示する.
+response bodyのstring()メソッドは小さいdocumentに対しては便利ですが,これはdocumentをメモリに読み込むので
+1MB以上のdocumentに対してはおすすめしません.
+大きいファイルはstreamで読み込みましょう.
+<p>(できなかった.)</p>
+<h1>Asynchronous Get（非同期通信）</h1>
+worker threadでファイルをダウンロードして、responseが可読ならcallbackをさせます.
+callbackはresponseのheaderが準備されたら生成されます.
+response bodyの読み込みはブロックされるかもしれません.
+OkHttpはresponsebodyを分けて受信するのに非同期のAPIを提供していません.
+<h1>Accessing Headers</h1>
+    通信においてヘッダを利用すると,通信に条件を付けられるようです.
+    ヘッダには送る側のヘッダと受け取る側のヘッダがあります.
+    普通HTTPのヘッダは各フィールドが一つかnoneの値のMapのように動きます.
+    しかし,いくつかのヘッダは複数の値を許可します.
+    <h1>  Posting a String</h1>
+    サービスにrequest bodyを送るのにHTTP POSTを使います.
+    
+    
+
+
+
+
+			</main>
+		<footer>
+
+		</footer>
+	</div>

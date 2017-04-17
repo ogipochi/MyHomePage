@@ -1,0 +1,42 @@
+<!DOCTYPE>
+<html lang="ja">
+
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width">
+	<script type="text/javascript" src="../../js/syntaxhighlighter/scripts/shCore.js"></script>
+	<script type="text/javascript" src="../../js/syntaxhighlighter/scripts/shBrushJScript.js"></script>
+	<script type="text/javascript" src="../../js/syntaxhighlighter/scripts/shBrushJava.js"></script>
+	<script type="text/javascript" src="../../js/syntaxhighlighter/scripts/shBrushXml.js"></script>
+	<link type="text/css" rel="stylesheet" href="../../js/syntaxhighlighter/styles/shCoreDefault.css">
+	<link type="text/css" rel="stylesheet" href="../../js/syntaxhighlighter/styles/shCore.css">
+	<script type="text/javascript">SyntaxHighlighter.all()</script>
+</head>
+<body>
+	<div class="wrapper">
+		<header>
+			簡易メモ
+		</header>
+		<main>
+			<h1>Classクラスとは</h1>
+			JVMはそれぞれのオブジェクトに対して型情報を追跡しています.
+			その型情報を保持するクラスのことをClassクラスといいます.
+		
+		<h1>リフレクションとは</h1>
+		クラス名やメソッド名を動的に変化することができる技術です
+		<pre class="brush:java">
+			// リフレクションなし
+Foo foo = new Foo ();
+foo.hello ();
+
+// リフレクション
+Class cl = Class.forName ("Foo");
+Method method = cl.getMethod ("hello");
+method.invoke (cl.newInstance ());
+		</pre>
+
+		</main>
+		<footer>
+
+		</footer>
+	</div>

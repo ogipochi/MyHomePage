@@ -1,0 +1,185 @@
+// JavaScript Document
+
+// page
+window.onpageshow = function(event) {
+    if (event.persisted) {
+         window.location.reload();
+     }
+};
+
+// fadein
+window.onload = function(){};
+window.onunload = function(){};
+jQuery('head').append(
+	'<style type="text/css">#main, header { opacity:0; -webkit-opacity:0; -moz-opacity:0; -ms-opacity:0; -o-opacity:0; -ms-filter:"alpha( opacity=0 )"; filter: alpha( opacity=0 ); } #wrap { display: none; } </style>'
+	);
+
+jQuery(function() {
+	jQuery('#wrap').attr( { style: 'display: none;' } );
+	jQuery('#wrap').fadeIn(1000);
+	jQuery('#main').attr( { style: 'opacity:1;' } );
+	jQuery('#main').fadeIn(2500);
+	jQuery('header').attr( { style: 'opacity:1;' } );
+	jQuery('header').fadeIn(2500);
+});
+
+jQuery(document).ready(function() {
+    jQuery("#container").fadeMover({
+            'effectType': 1,
+            'inSpeed': 1000,
+            'outSpeed': 500,
+            'inDelay' : 500,
+            'outDelay' : '0',
+            'nofadeOut' : 'non'
+    });
+});
+
+// header / pageimg
+jQuery(function(){
+	var hsize = jQuery("header").height();
+	jQuery(".pageimage").css("margin-top", hsize + 30 + "px");
+});
+
+// entryare img non
+jQuery(function(){
+	jQuery(".entryarea a").addClass("non");
+});
+
+// height fit
+jQuery(document).ready(function(){
+var wH = jQuery(window).height(); 
+var divH = jQuery('div.fit,section.fit,li.fit,article.fit,.fit').innerHeight();
+if(wH > divH){
+$('div.fit,section.fit,li.fit,article.fit,.fit').css('height',wH+'px'); 
+}
+});
+
+// hover
+jQuery(document).ready(
+	function(){
+	jQuery(".hover") .hover(function(){
+	jQuery(this).fadeTo("150",0.6);
+	},
+	function(){
+	jQuery(this).fadeTo("150",1.0);
+	});
+});
+
+// modal scroll fixed
+jQuery(function(){
+/*var current_scrollY;*/
+jQuery(".window").click(function(){
+current_scrollY = jQuery( window ).scrollTop();
+jQuery("html").addClass("nonscroll");
+jQuery("body").addClass("fixed");
+jQuery("body").css({
+    top: -1 * current_scrollY
+  });
+})
+jQuery(".close,wpcf7-submit").click(function(){
+jQuery("html").removeClass("nonscroll");
+jQuery("body").removeClass("fixed");
+jQuery("body").prop( { scrollTop: current_scrollY } );
+})
+});
+
+
+// Google Map Script
+function initialize() {
+	
+var furukawashika = new google.maps.LatLng(34.6127222,135.4908935);
+
+var myOptions = {
+zoom: 16,
+zoomControl: true,
+scrollwheel: true,
+center: furukawashika,
+mapTypeId: google.maps.MapTypeId.ROADMAP,
+scrollwheel: false,
+disableDefaultUI: true,
+styles: [
+				{
+					stylers: [
+					{ hue: "#fbfaf3" },
+ 					{ saturation: 0 },
+					{ lightness: 30 }
+	  				]
+				},
+                /* 幾何学要素 */
+                {
+                    featureType:"all",
+                    elementType:"geometry",
+                    stylers: [
+                        {visibility:"on"},
+                        {saturation:0},
+                        {lightness:20}
+                    ]
+                },
+                /* ラベル */
+                {
+                    featureType:"all",
+                    elementType:"labels",
+                    stylers: [
+                        {hue: '#999999'},
+                        {visibility:"on"}
+                    ]
+                },
+                /* 町名 */
+                {
+                    featureType:"administrative.locality",
+                    elementType:"all",
+                    stylers: [
+                        {visibility:"off"}
+                    ]
+                },
+				{
+				featureType: "landscape",
+				elementType: "all",
+				stylers: [
+				{hue: '#666666'},
+				{ visibility: "on" }
+				] 
+				},
+                /* 一通方向 */
+                {
+                    featureType:"road.local",
+                    elementType:"labels.icon",
+                    stylers: [
+                        {visibility:"off"}
+                    ]
+                },			
+                /* 観光スポット */
+                {
+                    featureType:"poi.attraction",
+                    elementType:"all",
+                    stylers: [
+                        {visibility:"Simplified"},
+                        {hue: '#808080'}
+                    ]
+                },			
+                /* ビジネス */
+                {
+                    featureType:"poi.business",
+                    elementType:"all",
+                    stylers: [
+                        {visibility:"on"}
+                    ]
+                }
+            ]
+
+};
+
+var map = new google.maps.Map(document.getElementById('map_canvas'), myOptions);
+ var image = {
+    url : 'http://teaser.furukawashika.jp/svg/mappin.svg',
+    scaledSize : new google.maps.Size(225, 80)
+  }
+  var marker1 = new google.maps.Marker({
+                position: furukawashika,
+                map: map,
+                title: 'フルカワ歯科診療所',
+				icon: image,
+				size: '225, 80'
+  });
+}
+google.maps.event.addDomListener(window, 'load', initialize);

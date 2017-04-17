@@ -1,0 +1,85 @@
+<!DOCTYPE>
+<html lnag="ja">
+
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width">
+	>
+</head>
+
+<body>
+	<div class="wrapper">
+		<header>
+			<div id="Logo">
+				<div id="LogoImage">
+				</div>
+				<div id="LogoName">
+					Ogihara Akihiro
+				</div>
+			</div>
+			<div id="breadcrumb">
+			</div>
+		</header>
+		<main>
+			<div class="mainVisual">
+				<h1>CPUとGPU</h1>
+				計算力は必要であるが,GPUの並列計算が深層学習には向いている.
+				深層学習では最高機能のcpuを使っても,並のGPUに歯が立たない.
+				ちなみに例としてCPU(i7-6700K)とGPU( NVIDIA GeForce GTX980Ti)でMNISTの学習時間（３周で打ち止め）を比較したときには約20倍の速度でした.
+				<h1>GPUクラウドコンピューティングとは</h1>
+				データは日々更新されるべきものであります.
+				更新されるたびに学習しなおすと考えると,情報元→クラウド→pcのような動きは
+				時間が大量にかかってしまう恐れがあります.
+				クラウド上に,GPUがあれば処理を高速にできる可能性があります.
+			
+				<h1>グラフィックボードのメーカー</h1>
+				グラボはいろいろなメーカーがグラフィックチップ(GPU)に冷却ファンなどを取り付けて発売しています.
+				深層学習を行うのであれば,グラフィックチップ(GPU)のメーカーはNVIDIA一択でしょう.
+				次にグラボのメーカーについて考えていきます.
+				その前にまず,あるGPUについて各メーカーは2種類(あるいはそれ以上)のグラボを販売します.
+				まずひとつめはFounder Editionと名のついたもの.
+				これは,GPUのメーカー(今回ならNVIDIA)が設計した設計図(リファレンスモデル)をもとに作られたものです.
+				リファレンスモデルはメーカーごとの差異はほとんどありません.
+				各企業はこのリファレンスモデルを参考に自分たちで改善してオリジナルグラボを作り販売します.
+				リファレンスモデルの改善版であるので,性能は高く,価格も安いのですが,安定性は低くなっています.
+				<strong>たとえ安くてもAMDのものはNG.</strong>
+				深層学習でGPUを使う場合,NVIDIAの出しているソフトウェアのCUDAとCuDNNが必要になるためです.
+				<h1>TensorFlowが使うGPUの性能</h1>
+				性能の悪いgpuはtensorflowが認識してくれない可能性があるため注意が必要!
+				どのGPUが動くかどうかはCompute Capabilityという値によります.
+				買うときは調べましょう.
+				<h1>比較</h1>
+				各メーカーのグラボを比較します.
+				現在(2017/4/14)一番高性能なGPUは<em>Geforce 1080 Ti</em>らしいので,このGPUを搭載したグラボを比較する.
+				<table border="1">
+					<th><td>グラボ名</td><td>メーカー</td><td>価格</td><td>ベースクロック</td><td>その他</td></th>
+					<tr><td>Founder Edition</td><td>MSI</td><td>105000円</td><td>1480MHz</td><td></td></tr>
+					<tr><td>VD6302 </td><td>MSI</td><td>108000円</td><td>1569MHz</td><td></td></tr>
+					<tr><td>R.O.G. STRIX</td><td>ASUS</td><td>117000円</td><td>1594MHz</td><td>取付には2.5スロット分のスペース要</td></tr>
+				</table>
+				割と違いは少ないが使った人からの信頼度はASUSが一番たかそうである.
+				<h1>クラウドコンピューティングGPUとローカルのGPU</h1>
+				結局どっちをつかえばいいのか.
+				例えばGoogleの提供するクラウドGPUだと月額2万5000円かかる.
+				5か月でGPUの価格を超えてしまう.
+				クラウド上で処理が実行できる利点としては,上でも説明したようにデータを集めてそのまま処理を行える点だとかんじる.
+				今回の場合,画像は実際に撮る＋ネットの画像になるのであれば現段階ではローカルのGPUを使うのがよいのでは?
+				将来的にはWebスクレイピングなども併せて,クラウドコンピューティングで学習させる方向でもよいと思う.
+			</div>
+			<div class="globalNav">
+			</div>
+			<a href="register.html">sample</a>
+		</main>
+		<footer>
+			<aside id="sideBar">
+			</aside>
+			</aside>
+		</footer>
+	</div>
+</body>
+
+</html>
+
+
+
+

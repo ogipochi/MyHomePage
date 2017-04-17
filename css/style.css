@@ -1,0 +1,178 @@
+@charset "UTF-8";
+/* http://meyerweb.com/eric/tools/css/reset/ 
+v2.0 | 20110126
+License: none (public domain)
+*/
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+b, u, i, center,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, embed, 
+figure, figcaption, footer, header, hgroup, 
+menu, nav, output, ruby, section, summary,
+time, mark, audio, video {
+margin: 0;
+padding: 0;
+border: 0;
+font-size: 16px;
+font: inherit;
+vertical-align: baseline;
+collor:#222;
+text-decoration: none;
+
+}
+/* HTML5 display-role reset for older browsers 
+*/
+article, aside, details, figcaption, figure, 
+footer, header, hgroup, menu, nav, section {
+display: block;
+}
+body {
+background-color: #eef;
+font-family: Helvetica , "游ゴシック" , "Yu Gothic" , sans-serif;
+}
+
+ol, ul {
+list-style: none;
+}
+blockquote, q {
+quotes: none;
+}
+blockquote:before, blockquote:after,
+q:before, q:after {
+content: '';
+content: none;
+}
+table {
+border-collapse: collapse;
+border-spacing: 0;
+}
+header{
+	width:auto;
+	height:3rem;
+}
+header #Logo{
+    color: #eee;
+	font-size: 0;
+	width:100%;
+	height:100%;
+    background-color: #111;
+}
+header #Logo #LogoName{
+    position:relative;
+    top:30%;
+    left: 50%;
+    height:100%;
+    width: auto;
+    font-size:1.6rem;
+}
+.mainVisual{
+    box-sizing: border-box;
+    width:100%;
+    height:60%;
+    border:solid 20px #333;
+    background-image: url(../assets/image/library.jpg);
+    background-size: cover;
+    
+}
+.mainVisual #mainVisualComment{
+    font-style: bold;
+    font-size:2rem;
+    color: #fff;
+}
+#globalNavTitle{
+    background-color: #111;
+    height:auto;
+}
+#globalNavtitle p{
+    display:inline;
+    color:#eee;
+    background-color: red;
+
+ }
+
+ul{
+    font-size:0;
+    width:100%;
+    height:50%;
+
+}
+ul .globalNavContent{
+    font-size:1rem;
+list-style-type: none;
+box-sizing: border-box;
+border:2px solid #fff;
+display:inline-block;
+-webkit-transition: 0.8s;
+-moz-transition: 0.8s;
+-o-transition: 0.8s;
+-ms-transition: 0.8s;
+transition: 0.8s;
+
+}
+ul .globalNavContent:hover{
+    opacity: 0.5;
+}
+
+#globalNavProfile{
+    background-image: url(../assets/image/global_nav_profile.jpg);
+    width:25%;
+    height:75%;
+}
+#globalNavStudy{
+    background-image: url(../assets/image/global_nav_study.jpg);
+ width:25%;
+    height:75%;
+}
+#globalNavProgram{
+    background-image: url(../assets/image/global_nav_program.jpg);
+width:25%;
+    height:75%;
+}
+#globalNavQuestion{
+    background-image: url(../assets/image/global_nav_question.jpg);
+width:25%;
+    height:75%;
+}
+
+.globalNavContent a{
+display:block;
+height: 100%;
+width: auto;
+}
+.globalnavLabel_black{
+    
+        position: relative;
+    top:80%;
+    left:30%;
+    font-family: sans-serif;    
+    font-style: bold;
+    font-size: 1.5rem;
+    letter-spacing: 0.01rem;
+    color:#222;
+}
+
+.globalnavLabel_white{
+    
+        position: relative;
+    top:80%;
+    left:30%;
+    font-family: sans-serif;
+    font-style: bold;
+    font-size: 1.5rem;
+    letter-spacing: 0.01rem;
+    color:#eef;
+     -webkit-transition: 0.8s;
+-moz-transition: 0.8s;
+-o-transition: 0.8s;
+-ms-transition: 0.8s;
+transition: 0.8s;
+}
+
+
+

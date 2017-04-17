@@ -1,0 +1,152 @@
+<!DOCTYPE>
+<html lang="ja">
+
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width">
+	<script type="text/javascript" src="../../js/syntaxhighlighter/scripts/shCore.js"></script>
+	<script type="text/javascript" src="../../js/syntaxhighlighter/scripts/shBrushJScript.js"></script>
+	<script type="text/javascript" src="../../js/syntaxhighlighter/scripts/shBrushJava.js"></script>
+	<script type="text/javascript" src="../../js/syntaxhighlighter/scripts/shBrushXml.js"></script>
+	<link type="text/css" rel="stylesheet" href="../../js/syntaxhighlighter/styles/shCoreDefault.css">
+	<link type="text/css" rel="stylesheet" href="../../js/syntaxhighlighter/styles/shCore.css">
+	<script type="text/javascript">
+		SyntaxHighlighter.all()
+	</script>
+</head>
+
+<body>
+	<div class="wrapper">
+		<header>
+		</header>
+		<main>
+			<h1>LayoutInflaterとは</h1>
+			LayoutInflaterとはxmlに対応したViewオブジェクトをインスタンス化するクラスです. これを使えばxmlからViewの生成を動的に行えます.
+			<h1>例1</h1>
+			<h3>このアプリの説明</h3>
+			<p>Buttonを押すとactivity_main.xmlのcontainerの部分がlayout1,layou2に入れ替わる</p>
+			activity.xml
+			<pre class="brush:xml">
+				&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;
+&lt;LinearLayout xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;
+    xmlns:app=&quot;http://schemas.android.com/apk/res-auto&quot;
+    xmlns:tools=&quot;http://schemas.android.com/tools&quot;
+    android:layout_width=&quot;match_parent&quot;
+    android:layout_height=&quot;match_parent&quot;
+    tools:context=&quot;com.example.pochi.test.MainActivity&quot;
+    android:orientation=&quot;vertical&quot;&gt;
+
+    &lt;TextView
+        android:id=&quot;@+id/textView&quot;
+        android:layout_width=&quot;368dp&quot;
+        android:layout_height=&quot;wrap_content&quot;
+        android:text=&quot;hello&quot;
+        tools:layout_editor_absoluteX=&quot;8dp&quot;
+        tools:layout_editor_absoluteY=&quot;0dp&quot; /&gt;
+    &lt;LinearLayout
+        android:layout_height=&quot;wrap_content&quot;
+        android:id=&quot;@+id/container&quot;
+        android:layout_width=&quot;match_parent&quot;
+        android:layout_weight=&quot;1&quot;
+        android:orientation=&quot;vertical&quot;&gt;
+    &lt;/LinearLayout&gt;
+    &lt;Button
+        android:text=&quot;Button&quot;
+        android:id=&quot;@+id/button1&quot;
+        android:layout_width=&quot;match_parent&quot;
+        android:layout_height=&quot;wrap_content&quot;
+        /&gt;
+    &lt;Button
+        android:text=&quot;Button&quot;
+        android:id=&quot;@+id/button2&quot;
+        android:layout_height=&quot;wrap_content&quot;
+        android:layout_width=&quot;match_parent&quot;
+
+        /&gt;
+&lt;/LinearLayout&gt;
+			</pre>
+			layout1.xml
+			<pre class="brush:xml">
+			&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;
+&lt;LinearLayout xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;
+    android:layout_width=&quot;match_parent&quot;
+    android:layout_height=&quot;match_parent&quot;&gt;
+    &lt;TextView
+        android:text=&quot;This is layout1&quot;
+        android:id=&quot;@+id/textView1&quot;
+        android:layout_width=&quot;wrap_content&quot;
+        android:layout_height=&quot;wrap_content&quot; /&gt;
+&lt;/LinearLayout&gt;
+
+			</pre>
+			layout1.xml
+			<pre class="brush:xml">
+				&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;
+&lt;LinearLayout xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;
+    android:layout_width=&quot;match_parent&quot;
+    android:layout_height=&quot;match_parent&quot;&gt;
+
+    &lt;TextView
+        android:text=&quot;This is layout2&quot;
+        android:id=&quot;@+id/textView1&quot;
+        android:layout_width=&quot;wrap_content&quot;
+        android:layout_height=&quot;wrap_content&quot; /&gt;
+&lt;/LinearLayout&gt;
+
+			</pre>
+			MainActivity.java
+			<pre class="brush:java">
+				package com.example.pochi.test;
+import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.widget.LinearLayout;
+
+
+public class MainActivity extends AppCompatActivity {
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        final LinearLayout container=(LinearLayout)findViewById(R.id.container);
+        findViewById(R.id.button1).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                container.removeAllViews();
+                getLayoutInflater().inflate(R.layout.layout1,container);
+            }
+        });
+
+        findViewById(R.id.button2).setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+
+                container.removeAllViews();
+                getLayoutInflater().inflate(R.layout.layout2, container);
+            }
+        });
+
+    }
+}
+
+			</pre>
+			まず<p>final LinearLayout container=(LinearLayout)findViewById(R.id.container);</p>
+			でlayoutを入れるための入れ物のインスタンスを取得する.
+			Buttonのクリック処理は
+			<p>container.removeAllViews();</p>
+			で取得したcontainerのViewを消去する.
+			アプリ起動時には何も入っていないが一度Buttonを押してからはここにはViewが入っているはずなので.
+			次に
+			<p>getLayoutInflater().inflate(R.layout.layout1,container);</p>
+			でcontainerに第一引数のlayout1.xmlのViewを入れる.
+		</main>
+		<footer>
+			
+		</footer>
+	</div>
+</body>
+</html>

@@ -1,0 +1,66 @@
+<!DOCTYPE>
+<html lang="ja">
+
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width">
+	<script type="text/javascript" src="../../js/syntaxhighlighter/scripts/shCore.js"></script>
+	<script type="text/javascript" src="../../js/syntaxhighlighter/scripts/shBrushJScript.js"></script>
+	<script type="text/javascript" src="../../js/syntaxhighlighter/scripts/shBrushJava.js"></script>
+	<link type="text/css" rel="stylesheet" href="../../js/syntaxhighlighter/styles/shCoreDefault.css">
+	<link type="text/css" rel="stylesheet" href="../../js/syntaxhighlighter/styles/shCore.css">
+	<script type="text/javascript">SyntaxHighlighter.all()</script>
+</head>
+<body>
+	<div class="wrapper">
+		<header>
+			参考サイト
+			<a href="http://www.php-kaihatsu.com/blog/623.html">
+			http://www.php-kaihatsu.com/blog/623.html</a>
+		</header>
+		<main>
+			通常レンタルサーバのデータベースのポートは閉じられているため、Androidからの接続はできません.
+			そのためapi通信というものを行います.
+			イメージとしましては、Androidアプリからレンタルサーバーに要求をだして、その結果がJSON形式でかえってくるので、
+			それをandroid側で受け取るという流れです.
+			<h1>例1</h1>
+			まずはデータベースをjson形式で吐き出させるところからです.
+			参考サイト
+			<p><a href ="http://qiita.com/fantm21/items/891192da1a095e94c9e1">
+			http://qiita.com/fantm21/items/891192da1a095e94c9e1</a></p>
+			<p><a href="http://qiita.com/shts/items/775973783966ce7b19cf">
+			http://qiita.com/shts/items/775973783966ce7b19cf</a>
+			</p>
+			<table>
+				<td><tr>データベース</tr><tr>mysql</tr></td>
+				<td><tr>サーバー</tr><tr>minibird</tr></td>
+			</table>
+			今回はMySQLデータベースについての例です.
+			まずは以下からデータベースにアクセスするためのドライバをプロジェクトに追加しなければいけないのだが...
+			<a href="https://dev.mysql.com/downloads/connector/">
+			https://dev.mysql.com/downloads/connector/</a>
+			build/gradleが予想以上に便利でappのbuild.gradleのdependenciesの末尾に以下を追加するだけで良い.
+			<p>compile "mysql:mysql-connector-java:5.1.41"</p>
+			ただしバージョン(今回は5.1.41)に関しては上のサイトをみて最新版のバージョンを確認するか、
+			自分の使いたいバージョンを選ぶこと.
+			<h3>Retrofitでのパラメータの渡し方</h3>
+			@GET("users/list?sort=desc")
+			<p>手順</p>
+			SQLを使うには、以下の手順で行います.
+			<ul>
+				<li>Statementを作成する</li>
+				<li>データベースへの問い合わせを実行する</li>
+				<li>データベースからの結果を取得する</li>
+				<li>リソースを解放する</li>
+			</ul>
+			<h2>Statement</h2>
+			パラメータなしのSQL文をデータベースに送る際には、通常Statementオブジェクトが利用されます.
+			同じSQL文が多数実行される場合はPreparedStatementオブジェクトが実行されます.
+			例外はSQLExceptionで返されます.
+			<p>SqlConnecter.java</p>
+			今回のように例外の発生する可能性のあるメソッドでは、try-catch文を使ってメソッド内で
+			例外をキャッチするか、throwsを使ってメソッドを呼び出した先にExceptionを投げます.
+		</main>
+		<footer>
+		</footer>
+	</div>

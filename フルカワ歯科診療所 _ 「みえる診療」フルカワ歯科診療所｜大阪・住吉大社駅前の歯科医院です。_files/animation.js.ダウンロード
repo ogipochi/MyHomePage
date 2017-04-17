@@ -1,0 +1,62 @@
+<!-- UP  -->
+jQuery(function(){
+jQuery(window).scroll(function (){
+jQuery('.up').each(function(){
+var elemPos = jQuery(this).offset().top;
+var scroll = jQuery(window).scrollTop();
+var windowHeight = jQuery(window).height();
+if (scroll > elemPos - windowHeight + 50){
+jQuery(this).css("opacity","1" );
+jQuery(this).css({ 
+"transform": "translateY(0%)"
+});
+} else {
+jQuery(this).css("opacity","0" );
+jQuery(this).css({ 
+"transform": "translateY(20%)"
+});
+}
+});
+});
+});
+
+<!-- comingsoon  -->
+jQuery(function(){
+jQuery(window).scroll(function (){
+jQuery('.comingsoon').each(function(){
+var elemPos = jQuery(this).offset().top;
+var scroll = jQuery(window).scrollTop();
+//var windowHeight = jQuery(window).height();
+if (scroll > 1){
+jQuery(this).css("opacity","0" );
+} else {
+jQuery(this).css("opacity","1" );
+}
+});
+});
+});
+
+<!-- PAGETOP  -->
+jQuery(function(){
+jQuery(window).scroll(function (){
+jQuery('#pagetop').each(function(){
+var elemPos = jQuery(this).offset().top;
+var scroll = jQuery(window).scrollTop();
+//var windowHeight = jQuery(window).height();
+if (scroll > 300){
+jQuery(this).css("opacity","1" );
+} else {
+jQuery(this).css("opacity","0" );
+}
+});
+});
+});
+
+jQuery(function() {
+jQuery('#pagetop').click(function () {
+        jQuery('body,html').animate({
+            scrollTop: 0
+        }, 500);
+        return false;
+    });
+});

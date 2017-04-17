@@ -1,0 +1,33 @@
+<!DOCTYPE>
+<html lang="ja">
+
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width">
+	<script type="text/javascript" src="../../js/syntaxhighlighter/scripts/shCore.js"></script>
+	<script type="text/javascript" src="../../js/syntaxhighlighter/scripts/shBrushJScript.js"></script>
+	<script type="text/javascript" src="../../js/syntaxhighlighter/scripts/shBrushJava.js"></script>
+	<link type="text/css" rel="stylesheet" href="../../js/syntaxhighlighter/styles/shCoreDefault.css">
+	<link type="text/css" rel="stylesheet" href="../../js/syntaxhighlighter/styles/shCore.css">
+	<script type="text/javascript">SyntaxHighlighter.all()</script>
+</head>
+<body>
+	<div class="wrapper">
+		<header>
+		非同期処理について
+		</header>
+		<main>
+			<h1>AsyncTask</h1>
+			<h2>protected abstract Result doInBackground(Params... params)</h2>
+			AsyncTaskの非同期処理は主にdoInBackgroundで実行される.
+			このメソッドのParamsは引数、resultは戻り値を表しその型についても自分で指定できる.
+			Asynctackのexecuteを実行するとき渡す引数がParamsに渡される.
+			<h2>protected void onPostExecute(Result result)</h2>
+			このメソッドはdoInBackgroundのあとに呼ばれる.
+			doInBackgroundのresultが引数のresultで渡される.
+			
+			</main>
+		<footer>
+
+		</footer>
+	</div>

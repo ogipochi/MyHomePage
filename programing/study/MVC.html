@@ -1,0 +1,43 @@
+<!DOCTYPE>
+<html lang="ja">
+
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width">
+	<script type="text/javascript" src="../../js/syntaxhighlighter/scripts/shCore.js"></script>
+	<script type="text/javascript" src="../../js/syntaxhighlighter/scripts/shBrushJScript.js"></script>
+	<script type="text/javascript" src="../../js/syntaxhighlighter/scripts/shBrushJava.js"></script>
+	<link type="text/css" rel="stylesheet" href="../../js/syntaxhighlighter/styles/shCoreDefault.css">
+	<link type="text/css" rel="stylesheet" href="../../js/syntaxhighlighter/styles/shCore.css">
+	<script type="text/javascript">SyntaxHighlighter.all()</script>
+</head>
+<body>
+	<div class="wrapper">
+		<header>
+			MVCの考え方が開発に大事そうなのでちょっと調べてみます.
+		</header>
+		<main>
+			<h1>MVCとは</h1>
+			開発したプログラムの仕様を変更するとき、すべてを一つのプログラムで書いてしまうと、
+			この変更が非常にややこしくなってしまいます.
+			なので,ルールを決めてソースを小分けに使用をというのがMVCの考え方です.
+			<h1>それぞれの意味</h1>
+			MVCのそれぞれのアルファベットにはソースの分割後のそれぞれの役割を意味します.
+			<ul>
+				<li>Model:ビジネスロジック</li>
+				<li>View:Modelの表示</li>
+				<li>Controller:Viewの入力を受け取ってModelを起動</li>
+			</ul>
+			<h1>MVP(Push-MVC)とは</h1>
+			ModelとViewの接続をControllerに行ってもらうやり方です.
+			これをPush-MVC,MVPといいます.
+			Viewは受け身になるためPassiveViewと言います.
+			<h1>H-MVC</h1>
+			MVCに階層構造を付与したものです.
+			1画面に一組のMVCだと各々が大きくなってしまうため複雑になってしまうのです.
+			
+		</main>
+		<footer>
+
+		</footer>
+	</div>
