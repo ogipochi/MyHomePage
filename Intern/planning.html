@@ -1,0 +1,62 @@
+<!DOCTYPE>
+<html lnag="ja">
+
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width">
+	>
+</head>
+
+<body>
+	<div class="wrapper">
+		<header>
+			<div id="Logo">
+				<div id="LogoImage">
+				</div>
+				<div id="LogoName">
+					Ogihara Akihiro
+				</div>
+			</div>
+			<div id="breadcrumb">
+			</div>
+		</header>
+		<main>
+			2017/04/19
+			<div class="mainVisual">
+                <h1>データの集め方</h1>
+                <ul><li><h3>スクレイピング、クローリング</h3></li>
+                この集め方の場合,画像処理は施したほうが良いだろうか?
+                集めたあとのタグ付けはできるのか?
+                画像の正当性(何度学習しても正解しない画像を削除すればいいかな?)
+                画像は集められるか.
+                <strong>この集め方はカテゴリ用の画像の収集には使えるかも</strong>
+                <li><h3>人工的に撮影</h3></li>
+                <ol>
+                <li>商品をある色の背景で撮影する.</li>
+                <li>背景のアルファ値を0にする.</li>
+                <li>画像の角度,向き,位置などを変えて適当な背景と合成する</li>
+                </ol>
+                </ul>
+			<h1>構造ついて</h1>
+            最終的にオークションのタグ付けに使うのであれば,段階を分けてモデルを作るのはどうか.
+            ひとつ目のモデルでは大まかなカテゴリの分類を行い,２つめのモデルで詳細な分類をおこなえば良いのでは?
+            (あるいはそれ以上)
+            <img src="planning.jpg">
+                
+			</div>
+			<div class="globalNav">
+			</div>
+		</main>
+		<footer>
+			<aside id="sideBar">
+			</aside>
+			</aside>
+		</footer>
+	</div>
+</body>
+
+</html>
+
+
+
+

@@ -1,0 +1,40 @@
+<!DOCTYPE>
+<html lang="ja">
+
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width">
+	<script type="text/javascript" src="../../js/syntaxhighlighter/scripts/shCore.js"></script>
+	<script type="text/javascript" src="../../js/syntaxhighlighter/scripts/shBrushPython.js"></script>
+	<link type="text/css" rel="stylesheet" href="../../js/syntaxhighlighter/styles/shCoreDefault.css">
+	<link type="text/css" rel="stylesheet" href="../../js/syntaxhighlighter/styles/shCore.css">
+	<script type="text/javascript">SyntaxHighlighter.all()</script>
+</head>
+<body>
+	<div class="wrapper">
+		<header>
+			1-1データのダウンロード
+		</header>
+		<main>
+            <h1>urllib</h1>
+            ここではurllibライブラリを使ってみます.
+            これはurlを使って様々な処理を行うライブラリです.
+            機械学習で多数のデータを集める際使うことになるでしょう.
+            <p>page023.py</p>
+            <pre class="brush:python">
+            import urllib.request
+url="http://uta.pw/shodou/img/28/214.png"
+savename="test.png"
+
+urllib.request.urlretrieve(url,savename)
+print("保存しました")
+            </pre>
+            これはrequestモジュールは簡単にいうと,urlを開くメソッドを多数持ったモジュールです.
+            
+
+
+		</main>
+		<footer>
+
+		</footer>
+	</div>
