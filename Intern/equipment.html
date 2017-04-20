@@ -37,13 +37,13 @@
 				<p>一般的なハイスペックデスクトップpcとだいたい同じスペックで週5日一日<strong>8時間</strong>借りた時と,
 				出来る限り高速で学習できるようなGPUで週5日一日<strong>2時間</strong>借りた時の料金</p>
 				使う時間が変えてあるのは,このスペックならこの時間での学習が可能であると考えられたため.
-				上のほうのスペックだと8時間では終わらない可能性もある.(その場合,その都度セーブすればいい)
+				上のほうのスペックだと8時間では比較終わらない可能性もある.(その場合,その都度セーブすればいい)
 				<table border="1">
-					<th><td>VM Class</td><td>CPU Core</td><td>memory</td><td>GPU Type</td><td>Number of Gpu</td>
-					<td>SSD</td><td>location</td><td>hour/day</td><td>day/week</td><td>$/month</td></th>
-					<tr><td>Type1</td><td>Regular</td><td>8</td><td>32GB</td><td>NVIDIA Tesla K80</td><td>1</td><td>375GB</td><td>
+					<tr><th>VM Class</th><th>CPU Core</th><th>memory</th><th>GPU Type</th><th>Number of Gpu</th>
+					<th>SSD</th><th>location</th><th>hour/day</th><th>day/week</th><th>$/month</th></tr>
+					<tr><td>Regular</td><td>8</td><td>32GB</td><td>NVIDIA Tesla K80</td><td>1</td><td>375GB</td><td>
 						Japan</td><td>8時間</td><td>5日</td><td>$245(26,729円)</td></tr>
-					<tr><td>Type2</td><td>Regular</td><td>8</td><td>32GB</td><td>NVIDIA Tesla K80</td><td>8</td><td>375GB</td>
+					<tr><td>Regular</td><td>8</td><td>32GB</td><td>NVIDIA Tesla K80</td><td>8</td><td>375GB</td>
 					<td>Japan</td><td>2時間</td><td>5日</td><td>$295(32,077円)</td></tr></table>
 				<h1>グラフィックボードのメーカー</h1>
 				グラボはいろいろなメーカーがグラフィックチップ(GPU)に冷却ファンなどを取り付けて発売しています.
@@ -65,19 +65,12 @@
 				各メーカーのグラボを比較します.
 				現在(2017/4/14)一番高性能なGPUは<em>Geforce 1080 Ti</em>らしいので,このGPUを搭載したグラボを比較する.
 				<table border="1">
-					<th><td>グラボ名</td><td>メーカー</td><td>価格</td><td>ベースクロック</td><td>その他</td></th>
+					<tr><th>グラボ名</th><th>メーカー</th><th>価格</th><th>ベースクロック</th><th>その他</th></tr>
 					<tr><td>Founder Edition</td><td>MSI</td><td>105000円</td><td>1480MHz</td><td></td></tr>
 					<tr><td>VD6302 </td><td>MSI</td><td>108000円</td><td>1569MHz</td><td></td></tr>
 					<tr><td>R.O.G. STRIX</td><td>ASUS</td><td>117000円</td><td>1594MHz</td><td>取付には2.5スロット分のスペース要</td></tr>
 				</table>
 				割と違いは少ないが使った人からの信頼度はASUSが一番たかそうである.
-				<h1>クラウドコンピューティングGPUとローカルのGPU</h1>
-				結局どっちをつかえばいいのか.
-				例えばGoogleの提供するクラウドGPUだと月額2万5000円かかる.
-				5か月でGPUの価格を超えてしまう.
-				クラウド上で処理が実行できる利点としては,上でも説明したようにデータを集めてそのまま処理を行える点だとかんじる.
-				今回の場合,画像は実際に撮る＋ネットの画像になるのであれば現段階ではローカルのGPUを使うのがよいのでは?
-				将来的にはWebスクレイピングなども併せて,クラウドコンピューティングで学習させる方向でもよいと思う.
 				<h1>増設時の注意点</h1>
 				<h3>大きさ</h3>
 				高性能なグラボはケースに収まらない場合もある.
@@ -87,7 +80,17 @@
 				<h3>温度について</h3>
 				クーラー性能については,5分以上フルの負荷で稼働させた際75度以下になっていれば良いと言える.
 				ハイエンドGPUの場合(1080Tiなど)は水冷などの冷却方法も検討できる.
-				
+				<h1>グラボ単品の比較</h1>
+				とりあえず,ASUSの製品で10シリーズを比較してみる.(20170419現在)
+				<table border="1">
+					<tr><th>製品名</th><th>GPU</th><th>コアクロック</th><th>メモリ</th><th>メモリクロック</th><th>出力</th><th>サイズ</th><th>プロセッサ数</th><th>価格</th><th>備考</th></tr>
+					<tr><td>DUAL-GTX1050TI-4G</td><td>GTX1050TI</td><td>1290MHz</td><td>GDDR5 4GB 128bit</td><td>7,008MHz</td>
+					<td> DisplayPort×1 / HDMI×1 (HDMI 2.0)/DVI(DVI-D)×1</td><td>212×114×38</td><td>1</td><td>16930円</td><td>電源コネクタ不要</td></tr>
+					<tr><td>STRIX-GTX1070-O8G-GAMING</td><td>GTX1070</td><td>1632MHz</td><td>GDDR5 8GB 256bit</td><td>8,008MHz</td>
+					<td>  DisplayPort×2 / HDMI×2 (HDMI 2.0)/DVI(DVI-D)×1</td><td>298×134×40</td><td>1</td><td>53,749円</td><td>取付には2スロット分のスペース要</td></tr>
+					<tr><td> STRIX-GTX1080TI-O11G-GAMING</td><td>GTX1080TI</td><td>1,594MHz</td><td>GDDR5X 11GB 352bit</td><td>10,010MHz</td>
+					<td> DisplayPort×2 / HDMI×2 (HDMI 2.0)/DVI(DVI-D)×1</td><td>298×134×525</td><td>1</td><td>112,800円</td><td>取付には2.5スロット分のスペース要<br>長時間の使用で周囲の部品温度が100度を超えたというレビューもあった.</td></tr>
+				</table>
 			</div>
 			<div class="globalNav">
 			</div>
