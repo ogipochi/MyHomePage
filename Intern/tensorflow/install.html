@@ -1,179 +1,216 @@
-<!DOCTYPE>
+<!DOCTYPE html>
 <html lnag="ja">
 
 <head>
-	<meta charset="utf-8">
-	<meta name="viewport" content="width=device-width">
-	<script type="text/javascript" src="../../js/syntaxhighlighter/scripts/shCore.js"></script>
-	<script type="text/javascript" src="../../js/syntaxhighlighter/scripts/shBrushPowerShell.js"></script>
-	<link type="text/css" rel="stylesheet" href="../../js/syntaxhighlighter/styles/shCoreDefault.css">
-	<link type="text/css" rel="stylesheet" href="../../js/syntaxhighlighter/styles/shCore.css">
-	<script type="text/javascript">SyntaxHighlighter.all()</script>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width">
+    <script type="text/javascript" src="../../js/syntaxhighlighter/scripts/shCore.js"></script>
+    <script type="text/javascript" src="../../js/syntaxhighlighter/scripts/shBrushPowerShell.js"></script>
+    <link type="text/css" rel="stylesheet" href="../../js/syntaxhighlighter/styles/shCoreDefault.css">
+    <link type="text/css" rel="stylesheet" href="../../js/syntaxhighlighter/styles/shCore.css">
+    <script type="text/javascript">
+        SyntaxHighlighter.all()
+    </script>
     <link rel="stylesheet" href="../../mdl-templates/templates/text-only/material.min.css">
-	<script src="../../mdl-templates/templates/text-only/material.min.css"></script>
-	<link rel="stylesheet" href="//fonts.googleapis.com/icon?family=Material+Icons">
-	<link rel="stylesheet" href="../../css/text.css">
+    <script src="../../mdl-templates/templates/text-only/material.min.css"></script>
+    <link rel="stylesheet" href="//fonts.googleapis.com/icon?family=Material+Icons">
+    <link rel="stylesheet" href="../../css/text.css">
 </head>
 
 <body>
-	<div class="wrapper">
-		<header>
-			<div id="Logo">
-				<div id="LogoImage">
-				</div>
-				<div id="LogoName">
-					Ogihara Akihiro
-				</div>
-			</div>
-			<div id="breadcrumb">
-			</div>
-		</header>
-		<main>
-			2017/04/19
-			<div class="mainVisual">
+    <div class="wrapper">
+        <header>
+            <div id="Logo">
+                <div id="LogoImage">
+                </div>
+                <div id="LogoName">
+                    Ogihara Akihiro
+                </div>
+            </div>
+            <div id="breadcrumb">
+            </div>
+        </header>
+        <main>
+            2017/04/19
+            <div class="mainVisual">
                 まずはinstallからです.
                 <a href="https://www.tensorflow.org/install/install_linux">公式サイト</a>を参考に進めていきます.
                 <table border="1">
-                    <tr><th>OS</th><th>cpu</th><th>gpu</th></tr>
-                    <tr><td>Ubuntu_16.04</td><td>i7-6700HQ</td><td>なし</td></tr>
+                    <tr>
+                        <th>OS</th>
+                        <th>cpu</th>
+                        <th>gpu</th>
+                    </tr>
+                    <tr>
+                        <td>Ubuntu_16.04</td>
+                        <td>i7-6700HQ</td>
+                        <td>なし</td>
+                    </tr>
                 </table>
-                公式サイトによるとUbuntuの14.04以上推奨(他のlinuxでも可能ではあるが非推奨らしい)
-                TensorFlowはinstallの時点でCPU,GPUを分けてインストールします.
-                持っているPCにNVIDIAのGPUがついてればGPU supportのtensorflowを,ついていなければCPU support onlyのtensorflowをインストールしてください.
+                公式サイトによるとUbuntuの14.04以上推奨(他のlinuxでも可能ではあるが非推奨らしい) TensorFlowはinstallの時点でCPU,GPUを分けてインストールします. 持っているPCにNVIDIAのGPUがついてればGPU
+                supportのtensorflowを,ついていなければCPU support onlyのtensorflowをインストールしてください.
                 <h3>インストールの前に</h3>
                 tensorflowでGPUを使うにはNVIDIAのソフトウェアがインストールされている必要があります.
                 <ul>
-                    <li>CudaToolKit8.0については<a href="http://docs.nvidia.com/cuda/cuda-installation-guide-linux/#axzz4VZnqTJ2A">NVIDIAのドキュメント</a>
-                    に詳細が書いてあります.ドキュメントの通り,必ず関係するCUDAのpathの名前をLD_LIBRARY_PATHに追加してください.
+                    <li>CudaToolKit8.0については<a href="http://docs.nvidia.com/cuda/cuda-installation-guide-linux/#axzz4VZnqTJ2A">NVIDIAのドキュメント</a>                        に詳細が書いてあります.ドキュメントの通り,必ず関係するCUDAのpathの名前をLD_LIBRARY_PATHに追加してください.
                     </li>
                     <li>NVIDIAのドライバはCUDAのToolkitの8.0と関係しています.</li>
-                    <li>cuDNNについても<a href="https://developer.nvidia.com/cudnn">NVIDIAのドキュメント</a>を見てください
-                    ドキュメントの通りCUDA_HOMEの環境変数を作成しているか確認.
+                    <li>cuDNNについても<a href="https://developer.nvidia.com/cudnn">NVIDIAのドキュメント</a>を見てください ドキュメントの通りCUDA_HOMEの環境変数を作成しているか確認.
                     </li>
                     <li>
-                      TensorFlowはあるスペック以下(Compute Capability3.0以下)のGPUは使えません.
-                      <a href="">ここ</a>でCompute Capabilityが3.0以上であるか
-                        確認してください.
+                        TensorFlowはあるスペック以下(Compute Capability3.0以下)のGPUは使えません.
+                        <a href="">ここ</a>でCompute Capabilityが3.0以上であるか 確認してください.
                     </li>
-                    <li>libcupti-dev libraryというNVIDIA CUDA Profile Toolインターフェースのライブラリがあります.
-                        これのインストールには以下のコマンドをターミナルで実行.
+                    <li>libcupti-dev libraryというNVIDIA CUDA Profile Toolインターフェースのライブラリがあります. これのインストールには以下のコマンドをターミナルで実行.
                         <pre class="brush:powershell">
                             sudo apt-get install libcupti-dev
                         </pre>
                     </li>
-                    </ul>
-                    もし勧められたドライバがインストールできないのなら<a href="https://www.tensorflow.org/install/install">ソースからインストール</a>してください
-                    ただし,少なくとも以下の条件は満たすこと
-                    <ul>
-                        <li>CUDA toolkit 3.0以上</li>
-                        <li>cuDNN v3以上</li>
-                        <li>CUDA Compute Capability3.0以上</li>
-                    </ul>
-                    <h3>インストールの方法について</h3>
-                    TensorFlowのインストールの方法について選択できます.
-                    <ul>
-                        <li><a href="virtualEnvTitle"><h5>VirtualEnv</h5></a>
-                        これが最もおすすめです.
-                        仮想のpythonの環境で行うので,マシンのpythonの環境に影響を与えません.
-                        このインストールの際にはいろんなパッケージがインストールされますが,すべて必要なものなので消さないように.
-                        tensorflow始めるには,"<strong>activate</strong>"の仮想環境が必要になります.
-                        簡単にいうと,virtualenvはtensorflowのインストールと実行において安全で信頼のメカニズムを提供します.
+                </ul>
+                もし勧められたドライバがインストールできないのなら<a href="https://www.tensorflow.org/install/install">ソースからインストール</a>してください ただし,少なくとも以下の条件は満たすこと
+                <ul>
+                    <li>CUDA toolkit 3.0以上</li>
+                    <li>cuDNN v3以上</li>
+                    <li>CUDA Compute Capability3.0以上</li>
+                </ul>
+                <h3>インストールの方法について</h3>
+                TensorFlowのインストールの方法について選択できます.
+                <ul>
+                    <li>
+                        <a href="#virtualEnvTitle">
+                            <h5>VirtualEnv</h5>
+                        </a>
+                        これが最もおすすめです. 仮想のpythonの環境で行うので,マシンのpythonの環境に影響を与えません. このインストールの際にはいろんなパッケージがインストールされますが,すべて必要なものなので消さないように. tensorflow始めるには,"
+                        <strong>activate</strong>"の仮想環境が必要になります. 簡単にいうと,virtualenvはtensorflowのインストールと実行において安全で信頼のメカニズムを提供します.
+                    </li>
+                    <li>
+                        <h5>Native pip install</h5>
+                        なんのcontainer systemを通さず直接システムにTensorFlowを書き込みます. tensorflowをマルチユーザシステムの誰でも使えるようにするのにおすすめです. native pip installはcontainerがわけられていないので,pip
+                        instllatioinはシステムのPythonに依存しているinstllationに影響を与えるかもしれません. しかし,pipと自分のpythonの環境を理解しているのであれば,native
+                        pip installationはたった一つのコマンドでインストールできるので便利です.
+                    </li>
+                    <li>
+                        <h5>Docker</h5>
+                        Dockerでのインストールはマシン上で事前に用意たパッケージから行い, tensorFlowを完全に隔離します. Docker　containerはTensorFlowとそれに関係するものをすべて含みます. ただし,Dockerは非常に大きな容量(数百MB)になってしまいます.
+                        すでにDockerを導入している非常に大きなアプリケーションｌにTensorFlowを導入する際にはこれが良いでしょう.
+                    </li>
+                    <li>
+                        <h5>anaconda</h5>
+                        Anacondaでのインストールでは,condaで仮想環境を作ります. しかし,Anaconda内であっても
+                        <strong>conda install</strong>コマンドは使わず
+                        <strong>pip install</strong>をつかってください. (anacondaでのインストールはtensorflowはなんのサポートもテストもしていません.自己責任でお願いします)
+                    </li>
+                    <h3 id="virtualEnvTitle">Virtualenvでinstall</h3>
+                    ターミナルを開き指定されたコマンドを打ってください.
+                    <ol>
+                        <li>pipをインストール</li>
+                        <p><strong>$ sudo apt-get install python-pip python-dev python-virtualenv</strong></p>
+                        <li>virtualenv環境の構築</li>
+                        <p><strong>$ virtualenv --system-site-packages targetDirectory </strong></p>
+                        targetDirectoryはvirtualenvの構造のtopになります. targetDirectoryは~/tensorflowにするのが良いでしょう(もちろん自由なのでどのディレクトリでもokです)
+                        <li>virtual環境をActivate</li>
+                        bash,sh,ksh,zshの場合
+                        <p><strong>$ source ~/tensorflow/bin/activate</strong></p>
+                        csh,tcshの場合
+                        <p><strong>$ source ~/tensorflow/bin/activate.csh</strong></p>
+                        コマンド実行後にプロンプトが以下の用に変わっていたら成功です.
+                        <p><strong>(tensorflow)$</strong></p>
+                        <li>activateされたvirtualenvの環境で適するものを選んで実行してください</li>
+                        <p><strong>(tensorflow)$ pip install --upgrade tensorflow      </strong> # for Python 2.7</p>
+                        <p><strong>(tensorflow)$ pip3 install --upgrade tensorflow     </strong> # for Python 3.n</p>
+                        <p><strong>(tensorflow)$ pip install --upgrade tensorflow-gpu  </strong> # for Python 2.7 and GPU</p>
+                        <p><strong>(tensorflow)$ pip3 install --upgrade tensorflow-gpu </strong> # for Python 3.n and GPU</p>
+                        僕の環境だとpython3.5でGPUを使わないので2番目ですね. このコマンドが無事終了していたら,ステップ5は飛ばして次に進んでください.
+                        <li>ステップ4が失敗したら(pipのバージョンが8.1以下だと失敗します)以下のコマンドでactiveのvirtualenvにtensorFlowをインストールします
                         </li>
-                        <li><h5>Native pip install</h5>
-                        なんのcontainer systemを通さず直接システムにTensorFlowを書き込みます.
-                        tensorflowをマルチユーザシステムの誰でも使えるようにするのにおすすめです.
-                        native pip installはcontainerがわけられていないので,pip instllatioinはシステムのPythonに依存しているinstllationに影響を与えるかもしれません.
-                        しかし,pipと自分のpythonの環境を理解しているのであれば,native pip installationはたった一つのコマンドでインストールできるので便利です.
-                        </li>
-                        <li>
-                            <h5>Docker</h5>
-                            Dockerでのインストールはマシン上で事前に用意たパッケージから行い,
-                            tensorFlowを完全に隔離します.
-                            Docker　containerはTensorFlowとそれに関係するものをすべて含みます.
-                            ただし,Dockerは非常に大きな容量(数百MB)になってしまいます.
-                            すでにDockerを導入している非常に大きなアプリケーションｌにTensorFlowを導入する際にはこれが良いでしょう.
-                        </li>
-                        <li>
-                            <h5>anaconda</h5>
-                            Anacondaでのインストールでは,condaで仮想環境を作ります.
-                            しかし,Anaconda内であっても<strong>conda install</strong>コマンドは使わず
-                            <strong>pip install</strong>をつかってください.
-                            (anacondaでのインストールはtensorflowはなんのサポートもテストもしていません.自己責任でお願いします)
-                        </li>
-                        <h3 id="virtualEnvTitle">Virtualenvでinstall</h3>
-                        ターミナルを開き指定されたコマンドを打ってください.
-                        <ol>
-                            <li>pipをインストール</li>
-                            <p><strong>$ sudo apt-get install python-pip python-dev python-virtualenv</strong></p>
-                            <li>virtualenv環境の構築</li>
-                            <p><strong>$ virtualenv --system-site-packages targetDirectory </strong></p>
-                            targetDirectoryはvirtualenvの構造のtopになります.
-                            targetDirectoryは~/tensorflowにするのが良いでしょう(もちろん自由なのでどのディレクトリでもokです)
-                            <li>virtual環境をActivate</li>
-                            bash,sh,ksh,zshの場合
-                            <p><strong>$ source ~/tensorflow/bin/activate</strong></p>
-                            csh,tcshの場合
-                            <p><strong>$ source ~/tensorflow/bin/activate.csh</strong></p>
-                            コマンド実行後にプロンプトが以下の用に変わっていたら成功です.
-                            <p><strong>(tensorflow)$</strong></p>
-                            <li>activateされたvirtualenvの環境で適するものを選んで実行してください</li>
-                            <p><strong>(tensorflow)$ pip install --upgrade tensorflow      </strong>  # for Python 2.7</p>
-                            <p><strong>(tensorflow)$ pip3 install --upgrade tensorflow     </strong>  # for Python 3.n</p>
-                            <p><strong>(tensorflow)$ pip install --upgrade tensorflow-gpu  </strong>  # for Python 2.7 and GPU</p>
-                            <p><strong>(tensorflow)$ pip3 install --upgrade tensorflow-gpu </strong>  # for Python 3.n and GPU</p>
-                            僕の環境だとpython3.5でGPUを使わないので2番目ですね.
-                            このコマンドが無事終了していたら,ステップ5は飛ばして次に進んでください.
-                            <li>ステップ4が失敗したら(pipのバージョンが8.1以下だと失敗します)以下のコマンドでactiveのvirtualenvにtensorFlowをインストールします
-                            </li>
-                            <p>(tensorflow)$<strong>pip install --upgrade </strong><em>TF_PYTHON_URL </em># Python 2.7</p>
-                            <p>(tensorflow)$<strong>pip3 install --upgrade </strong><em>TF_PYTHON_URL   </em># Python 3.N</p>
-                            TF_PYTHON_URLにはtensorflowのpythonのパッケージのパス(URL)を各自入れてください.
-                            これはOSやtensorflow,pythonのバージョン,GPUの有無などによって変わってくるので注意です.
-                            あくまで一例ですが以下のような感じです.
-                            <p>(tensorflow)$<strong>pip3 install --upgrade \<br>
+                        <p>(tensorflow)$<strong>pip install --upgrade </strong><em>TF_PYTHON_URL </em># Python 2.7</p>
+                        <p>(tensorflow)$<strong>pip3 install --upgrade </strong><em>TF_PYTHON_URL   </em># Python 3.N</p>
+                        TF_PYTHON_URLにはtensorflowのpythonのパッケージのパス(URL)を各自入れてください. これはOSやtensorflow,pythonのバージョン,GPUの有無などによって変わってくるので注意です. あくまで一例ですが以下のような感じです.
+                        <p>(tensorflow)$<strong>pip3 install --upgrade \<br>
                             https://storage.googleapis.com/tensorflow/linux/cpu/tensorflow-1.0.1-cp34-cp34m-linux_x86_64.whl</strong></p>
-                            あくまで一例です.
-                            <li>最期のステップ</li>
-                            tensorflowのインストールができたら,
-                            installationをvalidationします.
-                            ここで一つ注意なのはTensorFlowを使うときには,virtualenvをいつもactivateさせとかなければいけません.
-                            もし今,activateしていないなら以下のコマンドのどちらかでactivateしてください.
-                            <p>bash, sh, ksh, or zsh の人</p>
-                            <p><strong>source ~/tensorflow/bin/activate</strong></p>
-                            <p>csh か tcshの人</p>
-                            <p><strong>source ~/tensorflow/bin/activate.csh</strong></p>
-                            activateされればそのプロンプトでtensorflowが使えるようになります.
-                            プロンプトの表示が以下ようになっていることを確認してください.
-                            <p>(tensorflow)$ </p>
-                            使い終わったら以下の様に打てばdeactiveでき,プロンプトをもとの状態に戻せます.
-                            <p>(tensorflow)$ <strong>deactivate</strong></p>]
-                            アンインストールしたければ以下のコマンドを通常の状態のプロンプトで入力してください
-                            <p>$<strong>rm -r&nbsp;</strong><em>targetDirectory </em></p>
-                        </ol>
-                    </ul>
+                        あくまで一例です.
+                        <li>最期のステップ</li>
+                        tensorflowのインストールができたら, installationをvalidationします. ここで一つ注意なのはTensorFlowを使うときには,virtualenvをいつもactivateさせとかなければいけません. もし今,activateしていないなら以下のコマンドのどちらかでactivateしてください.
+                        <p>bash, sh, ksh, or zsh の人</p>
+                        <p><strong>source ~/tensorflow/bin/activate</strong></p>
+                        <p>csh か tcshの人</p>
+                        <p><strong>source ~/tensorflow/bin/activate.csh</strong></p>
+                        activateされればそのプロンプトでtensorflowが使えるようになります. プロンプトの表示が以下ようになっていることを確認してください.
+                        <p>(tensorflow)$ </p>
+                        使い終わったら以下の様に打てばdeactiveでき,プロンプトをもとの状態に戻せます.
+                        <p>(tensorflow)$ <strong>deactivate</strong></p>] アンインストールしたければ以下のコマンドを通常の状態のプロンプトで入力してください
+                        <p>$<strong>rm -r&nbsp;</strong><em>targetDirectory </em></p>
+                    </ol>
+                    <h3 id="NativePip">native pipでのインストール</h3>
+                    pipでのインストールは簡単なインストールと複雑なインストールのちょうど中間の選択肢でしょう.
+                    <ol>
+                        <li>
+                            <h5>pythonとpipの前準備</h5>
+                        </li>
+                        UbuntuにはデフォルトでPythonが入っています. プロンプトで
+                        <strong>python - V</strong>と打って,以下のバージョンのどちらかのPythonが入っていることを確認してください.
+                        <ul>
+                            <li>Python 2.7</li>
+                            <li>Python 3.3以上</li>
+                        </ul>
+                        またUbuntuにはデフォルトでpipまたはpip3のパッケージマネージャがインストールされています.
+                        <strong>pip -V</strong>か<strong>pip3 -V</strong>コマンドでバージョンを確認してください. pipにしてもpip3にしてもバージョンは8.1以上にしておいてください.
+                        もしされていなければ,以下のコマンドでインストールしてください.
+                        <p>$<strong>sudo apt-get install python-pip python-dev</strong></p>
 
-                        </ol>
-                        
-                    </ul>
+                        <li>
+                            <h5>TensorFlowのインストール</h5>
+                        </li>
+                        pipとpythonが入っていることを確認してから進んでください. 状況にあったコマンドを一つ選んで,プロンプトで実行してください.
+                        <p># Python 2.7; CPU support (no GPU support)<br> $
+                            <strong>pip install tensorflow</strong></p>
+                        <p># Python 3.n; CPU support (no GPU support)<br> $
+                            <strong>pip3 install tensorflow</strong></p>
+                        <p># Python 2.7; GPU support<br> $
+                            <strong>pip install tensorflow-gpu</strong></p>
+                        <p># Python 3.n; GPU support<br> $
+                            <strong>pip3 install tensorflow-gpu</strong></p>
+                        <br> インストールできたら確認をしましょう.
+                        <li>
+                            <h5>インストールに失敗したら</h5>
+                        </li>
+                        以下のコマンドで最新のTensorFlowをインストールしてください.
+                        <p># Python 2.7<br> $
+                            <strong>sudo pip  install --upgrade <em>TF_PYTHON_URL </em></strong></p>
+                        <p># Python 3.N<br> $
+                            <strong>sudo pip3 install --upgrade <em>TF_PYTHON_URL</em></strong></p>
+                        TF_PYTHON_URLは環境によって違います.たとえば,linux,Python3.4,CPUならこれ
+                        <p> https://storage.googleapis.com/tensorflow/linux/cpu/tensorflow-1.0.1-cp34-cp34m-linux_x86_64.whl</p>
+                        インストールできたら,確認にすすんでください
+                        <li>
+                            <h5>TensorFlowのアンインストール</h5>
+                        </li>
+                        プロンプトで以下のコマンド
+                        <p>$<strong></strong></p>
+                        <p>$<strong></strong></p>
 
-    
+
+                    </ol>
+                </ul>
+
+                </ol>
+
+                </ul>
+
+
 
 
                 </table>
-			</div>
-			<div class="globalNav">
-			</div>
-		</main>
-		<footer>
-			<aside id="sideBar">
-			</aside>
-			</aside>
-		</footer>
-	</div>
+            </div>
+            <div class="globalNav">
+            </div>
+        </main>
+        <footer>
+            <aside id="sideBar">
+            </aside>
+            </aside>
+        </footer>
+    </div>
 </body>
 
 </html>
-
-
-
-

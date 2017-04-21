@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lnag="ja">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width">
+    <script type="text/javascript" src="../../js/syntaxhighlighter/scripts/shCore.js"></script>
+    <script type="text/javascript" src="../../js/syntaxhighlighter/scripts/shBrushPowerShell.js"></script>
+    <script type="text/javascript" src="../../js/syntaxhighlighter/scripts/shBrushPython.js"></script>
+    <link type="text/css" rel="stylesheet" href="../../js/syntaxhighlighter/styles/shCoreDefault.css">
+    <link type="text/css" rel="stylesheet" href="../../js/syntaxhighlighter/styles/shCore.css">
+    <script type="text/javascript">
+        SyntaxHighlighter.all()
+    </script>
+    <link rel="stylesheet" href="../../mdl-templates/templates/text-only/material.min.css">
+    <script src="../../mdl-templates/templates/text-only/material.min.css"></script>
+    <link rel="stylesheet" href="//fonts.googleapis.com/icon?family=Material+Icons">
+    <link rel="stylesheet" href="../../css/text.css">
+</head>
+
+<body>
+    <div class="wrapper">
+        <header>
+            <div id="Logo">
+                <div id="LogoImage">
+                </div>
+                <div id="LogoName">
+                    Ogihara Akihiro
+                </div>
+            </div>
+            <div id="breadcrumb">
+            </div>
+        </header>
+        <main>
+            2017/04/19
+            <h2>TensorFlowでの開発の勉強</h2>
+            <div class="mainVisual">
+                TnsorFlowのインストールが終わった人はここでTensorFlowでのプログラミングを勉強していきましょう. ここでは以下のことが学べます.
+                <ul>
+                    <li>Pythonでどのようなプログラミングをするか</li>
+                    <li>arrayというものについて</li>
+                    <li>機械学習というものについて</li>
+                </ul>
+                tensorFlowは複数のAPIを提供します. TensorFlow Coreという最下層のAPIでのプログラミングで基本何でもできます. 機械学習の研究者や最適化されたモデルをつくりたいならこれを使うことをおすすめします. より高いレベルのAPIがTensorFlow
+                Coreの上（の層？）にビルドされています. そっちのhigh-level APIの使いかたはTensorFlow Coreを使うよりぜんぜん簡単です. しかもより簡単により安定して繰り返しのタスクを作れます.
+                high-level APIはデータセット,推論,トレーニング,そしてインターフェースの処理の助けになります. (
+                <strong>contrib--</strong>と名のついたAPIは開発中なので注意!! 後のリリースでなくなったりするのであしからず)
+                <br> ただしこのチュートリアルではTensorFlow Coreから始めます. そこから始めないと,high-level APIを使うときに中で何が起きてるのかわからずとまどうでしょうから.
+                <h4>Tensor(行列)</h4>
+                TensorFlowのデータの主な単位はtensor(行列)です. tensor(行列)はいくつかの次元の数の行列で形つくられた,プリミティブ値です. tensorの階数(rank)は次元数です.
+                <br> 例えば下のこれはrank 0 のtensor(scalar)です.
+                <p>3</p>
+                次に下のこれはrank1のtensor(vecter)でshape[3]です.
+                <p>[1. ,2., 3.]</p>
+                下のこれはrank2のtensor(matrix)でshape[2,3]す.
+                <p>[[1., 2., 3.], [4., 5., 6.]]</p>
+                最期にこれはrank3のtensorでshape[2,1,3]です.
+                <p>[[[1., 2., 3.]], [[7., 8., 9.]]]</p>
+                <h4>example</h4>
+                <pre class="brush:python">
+                   import tensorflow as tf 
+                   
+                </pre> まずこの行はtensorflowのimportを行います. tensorflowをつかったプログラムはおそらく必ずこれを始めに書くことになるでしょう. これでtensorFlowのすべてのクラス,メソッド,シンボルにアクセスできるようになります.
+                <h5>Computational Graph(計算グラフ)</h5>
+                TensorFlow Coreプログラムは２つの分離したセクションで分かれていると言っていいでしょう.
+                <ol>
+                    <li>
+                        Computational graph(計算グラフ)のビルド（作ること）
+                    </li>
+                    <li>
+                        Computational Graphのrun(実行のこと)
+                    </li>
+                </ol>
+                Computational Graph(計算グラフ)とはTensorFlowがノード図に配置する操作のことです. 簡単なComputation graphをビルドしてみましょう. それぞれのノードはinout(入力)として0かそれ以上のtensorを受け取り,output(出力)としてtensorを生成します.
+                各ノードは定数です. ノードのタイプの一つに定数(constant)があります. これはなんのinput(入力)がなくとも,内部の値をoutput(出力)として吐き出します.
+                <br> 例えば次の例
+                <pre class="brush:python">
+                    import tensorflow as tf
+
+                    node1=tf.constant(3.0,tf.float32)
+                    node2=tf.constant(4.0)
+                    print (node1,node2)
+                </pre> 定数として3.0と4.0を指定して,それを表示する簡単なプログラムです. 出力は以下の様になります.
+                <p>Tensor("Const:0", shape=(), dtype=float32) Tensor("Const_1:0", shape=(), dtype=float32)</p>
+                3.0と4.0がされるわけではありません. (ちなみにfloat32を指定していないnode2もfloate32なのはこれがデフォルトだからです.) これらnode(ノード)はevaluation(評価)の時に3.0,4.0を出力するのです.
+                evaluation(評価)をするためには,
+                <strong>session</strong>内でcomputational graph をrun(実行)する必要があります.
+                <strong>session</strong>はTensorFlowのruntime(実行時間)の状態とcontrolを内包します.
+                <br> 下のコードはSessionオブジェクトの生成をして,node1とnode2をevaluateするためにすべてのcomputational graphをrunするrunメソッドを 呼び出しています.
+                <pre class=brush:python>
+                    import tensorflow as tf
+                    
+                    node1=tf.constant(3.0,tf.float32)
+                    node2=tf.constant(4.0)
+                    print (node1,node2)
+                    
+                    sess=tf.Session()
+                    print(sess.run([node1,node2]))
+                </pre> これで[3.0,4.0]の出力が得られます. もっと複雑な計算を行うことだってできます. 例えば,２つの定数のnodeを足して新しいgraphを作ります.
+                <pre class=brush:python>
+                    import tensorflow as tf
+
+                    node1 = tf.constant(3.0)
+                    node2 = tf.constant(4.0)
+                    
+                    node3 = tf.add(node1,node2)
+                    sess = tf.Session()
+                    print(node3)
+                    print(sess.run(node3))
+                </pre> 出力は以下の様になります.
+                <p>Tensor("Add:0", shape=(), dtype=float32)</p>
+                <p>7.0</p>
+                TensorBoardを使うとcomputation graphを視覚化できます.(詳しくは後ほど) 次に変数を扱ってみましょう. プレースホルダ
+                <strong>palceholder</strong>を使います. これは外部からのinput(入力)を受け取り,それを後々output(出力)できます.
+                <pre class="brush:python">
+                    import tensorflow as tf
+
+                    a = tf.placeholder(tf.float32)
+                    b = tf.placeholder(tf.float32)
+                    adder_node = a + b
+                    add_and_triple = adder_node * 3
+
+                    sess = tf.Session()
+                    print(sess.run(adder_node,{a:3,b:4}))
+                    print(sess.run(adder_node,{a:[1,3],b:[2,4]}))
+                    print(sess.run(add_and_triple,{a:3,b:4.5}))
+                </pre> 出力は下の様になります
+                <p>7.5<br> [ 3. 7.]<br> 22.5
+                </p>
+                機械学習では普通任意のimput(入力)を受け取るようなモデルが望まれます. 訓練可能なモデルを作るには,同じinputs(入力軍).
+                <strong>Variable</strong>でgraphに訓練可能なパラメータを追加できます. これはinitial value(初期値)とtype(型)で構成されます.
+                <pre class="brush:python">
+                    W = tf.Variable([.3], tf.float32)
+                    b = tf.Variable([-.3], tf.float32)
+                    x = tf.placeholder(tf.float32)
+                    linear_model = W * x + b
+                    </pre>
+                <strong>tf.constant</strong>はこれを呼び出した際に初期化され,その値は永続的に変えることはできません. それに対し,
+                <strong>tf.Variable</strong>は呼び出し時に初期化されることはありません. TensorFlowのプログラムのすべてのvariable(変数)を初期化するには以下の呼び出しを明示的に行わなくてはいけません.
+                <pre class="brush:python">
+                        init = tf.global_variables_initializer()
+                        sess.run(init)
+                    </pre> global variable(グローバル変数)を初期化する上のよう処理は非常に重要になります. sess.run(init)が呼ばれるまでは,変数は初期化されません. 下が実際実際にxに値を代入するプログラムになります.
+                <pre class="brush:python">
+                        import tensorflow as tf
+
+                        W = tf.Variable([.3],tf.float32)
+                        b = tf.Variable([-.3],tf.float32)
+                        x = tf.placeholder(tf.float32)
+                        linear_model = W * x + b
+                        sess = tf.Session()
+
+                        init = tf.global_variables_initializer()
+                        sess.run(init)
+
+                        print(sess.run(linear_model,{x:[1,2,3,4]}))
+                    </pre> すると以下のような出力が得られるはずです.
+                <p>
+                    [ 0. 0.30000001 0.60000002 0.90000004]
+                </p>
+                学習モデルを作ることはできましたが,まだそれが良いのかどうなのかわかりません. training data(訓練データ)でのモデルのevaluate(評価)を行うには,desired values(正解値)を提供するy placeholder(プレースホルダy)が必要になります.
+                またloss function(損失関数)も書かなくてはなりません. loss function(損失関数)は現在のモデル（の出力）と提供されたデータ（正解データ）にどれだけ差があるのかを計算します. 私達はlinear
+                regression(線形回帰)という（正解とモデルの出力の間のデルタ（微小増加量）の二乗和による計算方法) により損失を計算します.
+                <p><strong>linear_model</strong> - y</p>
+                はexampleのerrorデルタに対応する各element(要素)でベクトルを生成します. そのerrorを乗算するために
+                <strong>tf.square</strong>を呼びます. 最期に全exampleのerrorを抽象化した値として,乗算したerrorの総和をとったスカラを計算します. これには
+                <strong>tf.reduce_sum</strong>を使います.
+                ソースは下の様になります.
+                <p>sample5.py</p>
+                <pre class="brush:python">
+import  tensorflow as tf
+
+W = tf.Variable([.3], tf.float32)
+b = tf.Variable([-.3],tf.float32)
+x = tf.placeholder(tf.float32)
+linear_model = W * x + b
+
+y = tf.placeholder(tf.float32)
+squared_deltas = tf.square(linear_model - y)
+loss = tf.reduce_sum(squared_deltas)
+
+sess = tf.Session()
+
+init = tf.global_variables_initializer()
+sess.run(init)
+
+print(sess.run(loss,{x:[1,2,3,4],y:[0,-1,-2,-3]}))
+                </pre>
+                これの出力が
+                <p>23.66</p>
+                となります.これがloss(損失)で,できるだけ0に近づけようと学習をするのです.
+                上のソードではWとbはVariable(変数)であり,指定した値で初期化されますが,
+                <strong>tf.assign</strong>を使うとその値を変更できます.
+                以下の様に書けば良いのです.
+                <p>sample6.py</p>
+                <pre class = "brush:python">
+import  tensorflow as tf
+
+W = tf.Variable([.3], tf.float32)
+b = tf.Variable([-.3],tf.float32)
+x = tf.placeholder(tf.float32)
+linear_model = W * x + b
+
+y = tf.placeholder(tf.float32)
+squared_deltas = tf.square(linear_model - y)
+loss = tf.reduce_sum(squared_deltas)
+
+sess = tf.Session()
+
+init = tf.global_variables_initializer()
+sess.run(init)
+
+fixW = tf.assign(W, [-1.])
+fixb = tf.assign(b, [1.])
+sess.run([fixW, fixb])
+
+print(sess.run(loss,{x:[1,2,3,4],y:[0,-1,-2,-3]}))
+                </pre>
+                これの出力として出てくるloss(損失)は0.0になっています.
+                上のコードではこのassignの値は人間が考えて決めましたが,次の章では機械で自動的に決めさせます.
+                <h5>tf.train API</h5>
+                ここではは完璧な機械学習については考えません.
+                しかし,loss(損失)関数を最小化するために各変数の値を少しずつ少しずつ変えていってくれる<strong>optimizers</strong>(最適化関数)
+                という関数をTensorFlowは提供しています.
+                一番簡単なoptimizer(最適化関数)はgradient descent(最急降下法)でしょう.
+                再急降下法について詳しい説明はここではしません.
+                この方法の特徴を言うと,手法が簡単で計算が早いという利点と,広域的な最小値を求めることには不向きであるという欠点があります.
+                一般的に記号演算のプログラミングはめんどくさいです.
+                なので,TensorFlowは<strong>tf.gradients</strong>を使ってモデルの説明を渡すだけで簡単にその計算を行えるようにしました.
+                以下がそのサンプルです.
+                <p>sample7.py</p>
+                <pre class = "brush:python">
+import  tensorflow as tf
+
+W = tf.Variable([.3], tf.float32)
+b = tf.Variable([-.3],tf.float32)
+x = tf.placeholder(tf.float32)
+linear_model = W * x + b
+
+y = tf.placeholder(tf.float32)
+squared_deltas = tf.square(linear_model - y)
+loss = tf.reduce_sum(squared_deltas)
+
+optimizer = tf.train.GradientDescentOptimizer(0.01)
+train = optimizer.minimize(loss)
+
+sess = tf.Session()
+
+init = tf.global_variables_initializer()
+sess.run(init)
+
+for i in range(1000):
+    sess.run(train,{x:[1,2,3,4],y:[0,-1,-2,-3]})
+
+print(sess.run([W,b]))
+                </pre>
+                最終的な結果は以下の様になります.
+                <p>[array([-0.9999969], dtype=float32), array([ 0.99999082],
+ dtype=float32)]<p>
+     はい.機械学習できました.
+     ただ再急降下法は実際のコードではほとんどつかいませんし,モデルももっと複雑なものになるでしょう.
+     いよいよ次のステップでhigher levelについて学んで行きます.
+     <h5>Complete program（完成形の一例）</h5>
+     <p>sample8.py</p>
+     <pre class="brush:python">
+import numpy as np
+import tensorflow as tf
+
+W = tf.Variable([.3],tf.float32)
+b = tf.Variable([-.3],tf.float32)
+
+x = tf.placeholder(tf.float32)
+linear_model = W * x + b
+y = tf.placeholder(tf.float32)
+
+loss = tf.reduce_sum(tf.square(linear_model - y))
+
+optimizer = tf.train.GradientDescentOptimizer(0.01)
+train = optimizer.minimize()
+
+x_train = [1,2,3,4]
+y_train = [0,-1,-2,-3]
+
+init = tf.global_variables_initializer()
+sess = tf.Session()
+sess.run(init)
+for i in range(1000):
+    sess.run(train,{x:x_train, y:y_train})
+
+curr_W, curr_b, curr_loss  = sess.run([W, b, loss], {x:x_train, y:y_train})
+print("W: %s b: %s loss: %s"%(curr_W, curr_b, curr_loss))
+     </pre>
+     これを走らせて見てください.
+     sample6.pyで人間が必死になって考えた答えに非常に近い値が出力として出てきたことでしょう.
+     <h3>tf.contrib.learn</h3>
+     <strong>tf.contrib.learn</strong>はTensorFlowのライブラリの一つで機械学習の各工程のうち以下のものを
+     非常に簡単にしてくれます.
+     <ul>
+         <li>running training loop(訓練のループの実行)</li>
+         <li>running evaluation loops(評価ループの実行)</li>
+         <li>managing data sets(データセットの扱い)</li>
+         <li>managing feeding(データの供給の扱い)</li>
+     </ul>
+     <strong>tf.contrib.learn</strong>は非常に多くの標準モデルを定義します.
+     <h5>Basic Usage</h5>
+     <p>import tensorflow as tf</p>
+     tensorflowのインポートです
+     <p>import numpy as np</p>
+     numpyは前処理されたデータを扱うときなどによく使います.
+     <p>features = [tf.contrib.layers.real_valued_column("x", dimension=1)]</p>
+     特徴量のリストを定義します.これはひとつの実数の特徴量ですがもっと複雑なものも当然あります.
+     <p>estimator = tf.contrib.learn.LinearRegressor(feature_columns=features)</p>
+     estimatorはtrainingとfitting,そしてevaluation(訓練と調整,そして評価)を呼び出すフロントエンドメソッドです.
+     linear regression,logistic regression, linear classification, logistic classification,他にも
+     たくさんのニューラルネット classifier(分類器)　と　regressor（回帰モデル）が用意されています.
+     <p>
+         x = np.array([1., 2., 3., 4.])<br>
+y = np.array([0., -1., -2., -3.])<br>
+input_fn = tf.contrib.learn.io.numpy_input_fn({"x":x}, y, batch_size=4,num_epochs=1000)
+     </p>
+     TensorFlowはデータセットの読み込みを助けるメソッドも多数用意しています.
+     'numpy_input_fn'はデータのバッチ数をnum_epochsで与える必要があります.
+     <p>
+         estimator.fit(input_fn=input_fn, steps=1000)
+     </p>
+     これでtrainins step 1000回ごとにfit(調整)を呼び出せます.
+     <p>estimator.evaluate(input_fn=input_fn)</p>
+     これでモデルがどのくらいの精度であるか確かめます.
+     本当ならoverfitting(過学習)を防ぐためにvalidationのデータとtestingのデータは分けるべきです.
+            </div>
+            <div class="globalNav">
+            </div>
+        </main>
+        <footer>
+            <aside id="sideBar">
+            </aside>
+            </aside>
+        </footer>
+    </div>
+</body>
+
+</html>

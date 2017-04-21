@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lnag="ja">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width">
+    <script type="text/javascript" src="../../js/syntaxhighlighter/scripts/shCore.js"></script>
+    <script type="text/javascript" src="../../js/syntaxhighlighter/scripts/shBrushPowerShell.js"></script>
+    <script type="text/javascript" src="../../js/syntaxhighlighter/scripts/shBrushPython.js"></script>
+    <link type="text/css" rel="stylesheet" href="../../js/syntaxhighlighter/styles/shCoreDefault.css">
+    <link type="text/css" rel="stylesheet" href="../../js/syntaxhighlighter/styles/shCore.css">
+    <script type="text/javascript">
+        SyntaxHighlighter.all()
+    </script>
+    <link rel="stylesheet" href="../../mdl-templates/templates/text-only/material.min.css">
+    <script src="../../mdl-templates/templates/text-only/material.min.css"></script>
+    <link rel="stylesheet" href="//fonts.googleapis.com/icon?family=Material+Icons">
+    <link rel="stylesheet" href="../../css/text.css">
+</head>
+
+<body>
+    <div class="wrapper">
+        <header>
+            <div id="Logo">
+                <div id="LogoImage">
+                </div>
+                <div id="LogoName">
+                    Ogihara Akihiro
+                </div>
+            </div>
+            <div id="breadcrumb">
+            </div>
+        </header>
+        <main>
+            2017/04/19
+            <div class="mainVisual">
+                <p>MNISTとは:手書きの数字が大量に収録されているデータセット</p>
+                TensorFlowは大規模な数的演算をすることが非常に得意です. このチュートリアルではdeep convolutional MNIST classiier(深層畳み込みMNIST分類器)を構築することをとおしてTensorFlowモデルのbasic
+                building blocksを学びます.
+                <h3>About this Tutorial</h3>
+                このチュートリアルでははじめにmnist_softmax.py（よく使われるTensorFlowのモデル）のコードで何が起きているのかをご説明します.(ソフトマックス関数は機械学習でよく出てくる). 次のパートでaccuracy(分類精度)を向上させる方法をいくつかお教えします.
+                このチュートリアルでは以下のことを目的としています.
+                <ul>
+                    <li>画像のすべての画素を見て文字の識別を行うsoftmax regression function(ソフトマックス回帰関数)を作れる様になること</li>
+                    <li>数千枚の画像サンプルをmodel(モデル)に'見せ'て文字識別を行える様に訓練することをTensorFlowで行う.</li>
+                    <li>テストデータを使いmodelの分類精度を確かめる</li>
+                    <li>結果の改善のためにCNN(convolutional neural network)のbuild,trainそしてtestを行う</li>
+                </ul>
+                <h3>SetUp</h3>
+                まずモデル構築どうこうの前に画像データが必要になるので,それを読み込みましょう.
+                <h5>Load MNIST Data</h5>
+                下のコードをpythonで打ちこめばかってにMNISTをロードしてくれます.
+                <pre class="brush:python">
+                   from tensorflow.examples.tutorials.mnist import input_data
+                   mnist = input_data.read_data_sets('MNIST_data', one_hot=True)
+               </pre> ここの
+                <strong>mnist</strong>はtraining,validation,そしてtestingのセットがnumpy配列として保管されている軽めのクラスである. ミニバッチごとに関数を生成することもできるので下のほうでそれをつかっています.
+                <h5>Start TensorFlow InteractiveSession</h5>
+                TensorFlowはその計算のバックエンドでC++の言語をつかっています. その間の繋がりがsessionと呼ばれます. tensorFlowの使い方の基本が
+                <ol>
+                    <li>まずgraph(グラフ)を作る.</li>
+                    <li>それをsession(セッション)に移す</li>
+                </ol>
+                ここではTensorFlowでのコードの整形をより柔軟にするクラスの<strong>InteactiveSession</strong>というクラスを使います. これを使うとcomputation graphをbuildするoperation(操作)の中にgraphをrunするoperationを挟み込めます(?????).
+                これはIpythonなどのインタラクティブな環境では非常に便利です. 普通ならすべてのcomputation graphをsessionの始まる前にbuildしなければいけないのです.
+                <pre class="brush:python">
+                   import tensorflow as tf
+                   sess = tf.InteractiveSession()
+               </pre>
+                <h5>Computing Graph</h5>
+                Pythonで効率の良い計算をするのには,NumPyのようなライブラリをつかいます. このライブラリは行列の乗法などの質の高い操作を,他の言語で実装された効率の良いコードによって行ってくれます. 残念なことにPythonに返す段階でオーバーヘッドが発生してしまっているのが現状ですが.
+                GPUで計算する場合などにはこのオーバーヘッドが非常に良くないです.
+                <br> tensorFlowとPythonのデータの交換も非常に重いが,こちらはオーバーヘッドを避けるステップを踏んでいる. Pythonに依存した質の高い操作を一つするのではなく,tensrFlowはPythonのそとで互いに鑑賞する操作をするのです(???)
+                このアプローチはTheanoやTorchに似ています.
+                <br> したがってPythonの役割はこの外部のcomputation graphのbuildとrunさせるべきcomputation graphへの指示になります.
+                <h3>Build a Softmax Regression Model</h3>
+                このセクションでは一つのlinear layerでsoftmax regression model(ソフトマックス回帰モデル)をbuildする. 次のセクションで,そのモデルをmultilayer convolutional network(多層畳み込みネットワーク)用に拡張します.
+                <h5>Placeholder</h5>
+                まずはinput image(入力画像)へのノード,output classes(出力クラス)へのノードを作成するところからcomputation graphの構築を始めましょう.
+                <pre class="brush:python">
+                   x = tf.placeholder(tf.float32, shape=[None,784])
+                   y_ = tf.placeholder(tf.float32, shape=[none,10])
+               </pre> どちらも
+                <strong>placeholder</strong>なのでTensorflowでrunした時にその値を吐き出します.
+                <br> まず入力画像のxは2次元のfloating point number(浮動小数点)のtenosr(行列)で構成されます. 今回,xには[None,784]のshape(次元)を割り当てたが,まずこの,
+                <strong>784</strong>という値は,データセットの画像がもともと28×28でありそれを平らにしたデータを使うからである.
+                <strong>None</strong>ははじめの次元であることを示します. batch_sizeと対応していていくつでも構いません. targetのy_のクラスもまた2次元の行列でできています. これはMNISTの各データに与えられた正解データ(0~9)が入れられます.
+                <br> placeholderにおける
+                <strong>shape</strong>引数はオプションですが,指定すると合わないshapeの行列にたいしてバグをキャッチしてくれます.
+                <h5>Variable</h5>
+                weights(重み)としてwをbiases(バイアス)としてbを定義します. これはイメージとしてはinputに追加すればいいのではとおもいますが,TensorFlowが提供する
+                <strong>Variable</strong>を使うのがより良いでしょう.
+                <strong>Variable</strong>はcomputation graphに密接します. これはcomputationでつかわれ,また修正されます. 機械学習アプリケーションでは,一般にモデルパラメータを持つ要素は
+                <strong>Variable</strong>になります.
+                <pre class="brush:python">
+                    W = tf.Variable(tf.zeros[784,10])
+                    b = tf.Variable(tf.zeros[10])
+                </pre>
+                <strong>tf.Variable</strong>の呼び出しでの各パラメータの初期化はどちらの値も0にすることでパスしています.
+                Wは784×10の行列です.(input(入力)が784列でoutput(出力)が10列).
+                そしてbが10の次元のvector(ベクトル)(出力が10クラスだから).
+                <br>
+                Variableがsesionで使われる前に,そのsessionをつかって初期値（今回ならすべてzeroで与えられている）で初期化(init)される必要がある.
+                初期化されて初めて値を与えられる.
+                すべてのVariableは以下で初期化される.
+                <pre class = "brush:python">
+                    sess.run(tf.global_variables_initializer())
+                </pre>
+                <h5>Predicted Class and Loss Function(クラスの推定と損失関数)</h5>
+                回帰モデルの実装をできます.(というかします).
+                onput image(入力画像)xをベクトル化した値に重み行列Wをかけて最期にバイアスbを加える一行入れるだけ.
+                <pre class = "brush:python">
+                    y = tf.matmul(x,W) + b
+                </pre>
+                loss function(損失関数)は簡単に定義できます.
+                lossというのはあるひとつのexampleについてmodelのprediction(予測)がどのくらい悪いのかを表します.
+                training(訓練)が終わるまでにすべてのexampleのlossが最小に去るようにします.
+                我々のloss functionは対象とモデルの予測にソフトマックス関数を適用した値の間のcross-entropyになっています.
+                初心者のチュートリアルとしては,下の安定した式
+                <pre class = "brush:python">
+                    cross_entropy = tf.reduce_mean(
+                        tf.nn.softmax_cross_entropy_with_logits(labels=y_, logits=y))
+                </pre>
+                <strong>tf.nn.softmax_cross_entropy_with_logits</strong>は内部で最適化されていないmodelのpredictionとすべてのクラスの和にたいしてsoftmaxを適用します.
+                <strong>tf.reduce_mean</strong>はすべての和の平均をとります.
+                <h5>Train the Model</h5>
+                modelとloss functionの定義はできました.
+                これはTensorFlowをつかったstraightforward(順伝搬)のtrainを行います.
+                TensorFlowはcomputation graphの全体を知っているので,
+                各Variable(変数)へのrequest(要求)からloss（損失)のgradient(勾配)を見つけることで,自動の分類を行えます.
+                TensorFlowは様々な<a href="https://www.tensorflow.org/api_guides/python/train#optimizers">built-in optimization algorithm(最適化アルゴリズム)</a>
+                を持ちます.
+                今回はsteepest gradient descent(最急降下法）をstep length :0.5,descend:cross_entropyでつかっています.
+                <pre class="brush:python">
+                    train_step = tf.train.GradientDescentOptimizer(0.5).minimize(cross_entropy)
+                </pre>
+                この一文でTensorFlowがなにをしているかというと,computation graphに新しいoperationを追加してるのです.
+                そのoperationというのは,gradient(勾配)の計算,parameterの更新値の計算のstep,そして更新をparameterに適用するstepです.
+                <br>
+                run(実行)時に<strong>train_step</strong>から返されるoperatioｎはparameterを勾配降下です.
+                そのためmodelのtrainingは<strong>train_step</strong>がrun(実行)されるたび行われます.
+                <pre class ="brush:python">
+                    for _ in range(1000):
+                        batch = mnist.train.next_batch(100)
+                        train_step.run(feed_dict={x: batch[0], y_: batch[1]})
+                </pre>
+                これはtraining iteration(訓練の繰り返し)ごとに100のtraining exampleを読み込んでいます.
+                次の行で<strong>train_step</strong>をrunし,feed_dictをつかって,batch[0]に画像データ,batch[1]に正解データが入っているのでそれをplaceholderで定義したx,y_に
+                渡しています.
+                <strong>feed_dict</strong>はplaceholderに限らず,computation graph上のどんな行列でも使うことができます.
+
+                <h5>Evaluate Model</h5>
+                作ったmodelの精度はどうか.<br>
+                まず,predicted label(予想ラベル)は,どこから出すのかですが,<strong>tf.argmax</strong>を使いましょう.
+                これは入力のうち最も高いもののみを出力とします.
+                例えば<br>
+                <p>a = [0.1,0.2,0.5,0.3]<br>
+                であるならば<br>
+                tf.argmax(a,1)=[0,0,1,0]
+                </p>
+                となります.
+                正解率を出すなら以下の用に書いてください.
+                <pre class = "brush:python">
+                    correct_prediction = tf.equal(tf.argmax(y,1), tf.argmax(y_,1))
+                </pre>
+                modelの予想ｙの出力と正解ラベルy_それぞれをargmaxした時,その値が同じなら,1を返し,違うのであれば0を返します.<br>
+                正解率はこれ
+                <pre class = "brush:python">
+                    accuracy = tf.reduce_mean(tf.cast(correct_prediction, tf.float32))
+                </pre>
+                やっと実行できます.evaluationをして確かめましょう.
+                <pre class = "brush:python">
+                    print(accuracy.eval(feed_dict={x: mnist.test.images, y_: mnist.test.labels}))
+                </pre>
+
+
+            </div>
+            <div class="globalNav">
+            </div>
+        </main>
+        <footer>
+            <aside id="sideBar">
+            </aside>
+            </aside>
+        </footer>
+    </div>
+</body>
+
+</html>
