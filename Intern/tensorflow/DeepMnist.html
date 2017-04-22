@@ -33,6 +33,7 @@
         </header>
         <main>
             2017/04/19
+            <a href="https://www.tensorflow.org/get_started/mnist/pros">参考サイト</a>
             <div class="mainVisual">
                 <p>MNISTとは:手書きの数字が大量に収録されているデータセット</p>
                 TensorFlowは大規模な数的演算をすることが非常に得意です. このチュートリアルではdeep convolutional MNIST classiier(深層畳み込みMNIST分類器)を構築することをとおしてTensorFlowモデルのbasic
@@ -172,6 +173,89 @@
                 <pre class = "brush:python">
                     print(accuracy.eval(feed_dict={x: mnist.test.images, y_: mnist.test.labels}))
                 </pre>
+                <h3>Build a Multilayer Convolutional Network</h3>
+                92%なんていう精度はMNISTの分類結果としては最悪です.
+                ということで,さっきのシンプルなモデルを改造して程よく高度なネットワーク,convolutional neuralnetwork(畳み込みネットワーク)を作って見ましょう.
+                おそらく98%くらいの精度はでるのではないでしょうか.
+                それくらいでれば最高ではないが,最悪でもないと言えるでしょう.
+                <h5>Weight Initialization(重みの初期化)</h5>
+                そのようなモデルの制作には,重みとバイアスを大量に使います.
+                そうすると対象性の崩れからちゃんと0のgradient(勾配)になりません.
+                ReLuのニューロンをつかっているので,微小な正の数で初期化する手もあるでしょう.
+                今回はそれとは違う方法として,手動でVariableを生成する関数を作ってそれをつかうことにしましょう.
+                <pre class = "brush:python">
+                def weight_variable(shape):
+                    initial = tf.truncated_normal(shape, stddev=0.1)
+                    return tf.Variable(initial)
+                
+                def bias_variable(shape):
+                   initial = tf.constant(0.1, shape=shape)
+                   return tf.Variable(initial)
+                </pre>
+
+                <h5>Convolution and Pooling</h5>
+                tensorFlowはConvolution(畳み込み)とPooling(プーリング)を柔軟に行います.
+                boundaries(境界)やstride(ストライド:フィルタを適用する間隔)なんかも自由に設定できます.
+                今回のexampleでは最も一般的なタイプに設定します.
+                畳み込みフィルタリングはstride:1にゼロパディング(周囲に画素数0の画素を足すこと),よって出力はinputと同じサイズになります.
+                poolingは2×2の大きさでmaxプーリング行う.
+                codeをきれいに保つために,このようにoperationを抽象化しておきましょう.
+                <pre class = "brush:python">
+                   def conv2d(x, W):
+                      return tf.nn.conv2d(x, W, strides=[1, 1, 1, 1], padding='SAME')
+                   def max_pool_2x2(x):
+                      return tf.nn.max_pool(x, ksize=[1, 2, 2, 1],
+                      strides=[1, 2, 2, 1], padding='SAME') 
+                </pre>
+                <h5>First Convolutional Layer(はじめの畳込み層)</h5>
+                はじめの層の実装をします.
+                ここはconvolution層(畳み込み層)の構成で,max poolingに繋がります.
+                フィルタのサイズを表すpatch(パッチ)は5×5で,このフィルタで３２個の特徴量(これが出力になる)にします（28から増えている分はゼロパディングのぶんかな?）.
+                重み行列でこれを表そうとすると,<strong>[5,5,1,32]</strong>になります.
+                はじめの２つの値がpatch size(パッチサイズ)で5,5です.
+                次の値がinput channel(入力チャンネル)で今回使うMNISTの画像はグレースケールなので
+                1です.
+                最期の値がoutput channel(出力チャンネル)で32です.
+                またoutput channel(出力チャネル)の成分に添えられるbias(バイアス)も定義します.
+                <pre class="brush:python">
+                    W_conv1 = weight_variable([5, 5, 1, 32])
+                    b_conv1 = bias_variable([32])
+                </pre>
+                定義した畳み込み層を使うには入力側のshape(行列の形)も変換する必要があります.
+                MNISTははじめ<strong>[None,784]</strong>だったのですが,これを<strong>[-1,28,28,1]</strong>に変換します.
+                2列目,3列目の値が画像の幅,高さに対応します(元の画像が28×28).
+                4列目の値がcolor channelです.(グレー画像なので1,colorなら3)
+                <pre class="brush:python">
+                    x_image = tf.reshape(x, [-1,28,28,1])
+                </pre>
+                各値が定義できたので,入力画像<strong>x_image</strong>をweight tensor(重み行列,フィルタ)<strong>W_conv1</strong>で畳み込み,
+                bias(バイアス)<strong>b_conv1</strong>を加え,活性化関数ReLuに投げます.
+                最期にその出力をmax pooling<strong>max_pool_2×2</strong>メソッドに入力します.
+                maxpool_2×2で出力画像は14×14になります.
+                <h5>Second convolutional Layer(ふたつ目の畳込み層)</h5>
+                deep networkを構築するためにいくつかの層を積み重ねます.
+                ふたつ目の層は5×5のpatch(パッチ)のフィルタごとに64の特徴量を出力します.
+                <pre class="brush:python">
+                    W_conv2 = weight_variable([5, 5, 32, 64])
+                    b_conv2 = bias_variable([64])
+                    h_conv2 = tf.nn.relu(conv2d(h_pool1, W_conv2) + b_conv2)
+                    h_pool2 = max_pool_2x2(h_conv2)
+                </pre>
+                <h5>Densely Connected Layer(全結合層)</h5>
+                いまh_pool2から出てくる画像は７×７のサイズになっています.
+                出てきた出力のすべてを入力にした1024個のニューロンでできた層（全結合層）に渡します.
+                h_pool2からの出力の行列を行列のbatchに突っ込みます.
+                <pre class="brush:python">
+                    W_fc1 = weight_variable([7 * 7 * 64, 1024])
+                    b_fc1 = bias_variable([1024])
+                    
+                    h_pool2_flat = tf.reshape(h_pool2, [-1, 7*7*64])
+                    h_fc1 = tf.nn.relu(tf.matmul(h_pool2_flat, W_fc1) + b_fc1)
+                </pre>
+
+
+                
+
 
 
             </div>
